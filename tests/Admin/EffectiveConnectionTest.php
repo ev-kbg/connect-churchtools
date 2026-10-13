@@ -68,6 +68,18 @@ final class EffectiveConnectionTest extends TestCase
         $this->assertSame('gespeicherter-token', $this->effectiveConnection()['api_key']);
     }
 
+    /** Fork-Patch: Ein vollständiger Host wird ohne .church.tools angefragt. */
+    public function testAFullHostIsUsedAsIs(): void
+    {
+        ctp_test_set_option('ctp_settings', ['instance' => 'musterkirche.krz.tools', 'api_key' => Crypto::encrypt('gespeicherter-token')]);
+
+        $connection = $this->effectiveConnection();
+
+        $this->assertSame('', $connection['error']);
+        $this->assertSame('gespeicherter-token', $connection['api_key']);
+        $this->assertSame('https://musterkirche.krz.tools', $connection['base_url']);
+    }
+
     private function effectiveConnection(): array
     {
         $method = new ReflectionMethod(SettingsPage::class, 'effectiveConnection');

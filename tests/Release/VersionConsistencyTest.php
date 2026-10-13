@@ -75,7 +75,7 @@ final class VersionConsistencyTest extends TestCase
         // das Update ins Leere.
         $this->assertSame(
             sprintf(
-                'https://github.com/wirsindcgks/connect-churchtools/releases/download/v%1$s/churchtools-plugin-v%1$s.zip',
+                'https://github.com/ev-kbg/connect-churchtools/releases/download/v%1$s/churchtools-plugin-v%1$s.zip',
                 $this->pluginVersion()
             ),
             $metadata['download_url'] ?? null
@@ -161,10 +161,14 @@ final class VersionConsistencyTest extends TestCase
      * Semantic versioning, since the GitHub update checker compares releases
      * with version_compare() - a tag like "v1.0" or "1.0.0-final" would sort in
      * ways nobody expects.
+     *
+     * Fork: "<upstream>-kbg.<n>". version_compare() sorts it below <upstream>
+     * itself, but above every earlier fork release - the only comparison that
+     * happens, since installed copies read the fork's update.json.
      */
     public function testVersionIsSemver(): void
     {
-        $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', $this->pluginVersion());
+        $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+(-kbg\.\d+)?$/', $this->pluginVersion());
     }
 
     private function pluginVersion(): string

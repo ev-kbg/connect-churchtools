@@ -5,6 +5,15 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.38.0-kbg.1] - 2026-10-13
+
+Erste Version des Forks [ev-kbg/connect-churchtools](https://github.com/ev-kbg/connect-churchtools) auf Basis von 1.38.0. Ersetzt das bisherige Begleit-Plugin „ChurchTools Image Bridge – Kirchberg“.
+
+### Changed
+
+- **Das Instanzfeld nimmt auch einen vollständigen Host an**, z. B. `musterkirche.krz.tools`. Manche Instanzen antworten unter `<name>.church.tools` nur noch mit HTTP 302 auf einen anderen Host; weil das Plugin keiner Weiterleitung folgt, scheiterten Verbindungstest und Synchronisation. Ein reiner Instanzname wird weiterhin zu `<name>.church.tools`, eine eingefügte `*.church.tools`-Adresse weiterhin auf den Namen gekürzt. Was kein gültiger Hostname ist, wird verworfen.
+- **Updates kommen aus dem Fork.** Update-Prüfung, Plugin-URI, Release-Prüfung und Links im Reiter *Einstellungen → Updates* zeigen auf `ev-kbg/connect-churchtools`, damit ein Update des Originals die Anpassungen nicht überschreibt.
+
 ## [1.38.0] - 2026-10-07
 
 ### Added

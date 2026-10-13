@@ -4,7 +4,7 @@ Tags: churchtools, calendar, events, sync
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.38.0
+Stable tag: 1.38.0-kbg.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,9 +29,9 @@ Die Reiter dieses Fensters sind die Referenz: *Verwendung* beschreibt jede Optio
 
 == Installation ==
 
-1. Unter https://github.com/wirsindcgks/connect-churchtools/releases/latest die Datei `churchtools-plugin-vX.Y.Z.zip` herunterladen – nicht „Source code (zip)“, darin fehlen die gebauten Bestandteile.
+1. Unter https://github.com/ev-kbg/connect-churchtools/releases/latest die Datei `churchtools-plugin-vX.Y.Z.zip` herunterladen – nicht „Source code (zip)“, darin fehlen die gebauten Bestandteile.
 2. In WordPress unter Plugins → Installieren → Plugin hochladen die ZIP-Datei installieren und aktivieren. Im linken Menü erscheint „ChurchTools“.
-3. Unter ChurchTools → Einstellungen → Verbindung den Instanz-Namen (z. B. `musterkirche` für https://musterkirche.church.tools) und den API-Key hinterlegen, dann „Verbindung testen“.
+3. Unter ChurchTools → Einstellungen → Verbindung den Instanz-Namen (z. B. `musterkirche` für https://musterkirche.church.tools, oder den ganzen Host wie `musterkirche.krz.tools`, wenn die Instanz anderswo läuft) und den API-Key hinterlegen, dann „Verbindung testen“.
 4. Unter ChurchTools → Events → Kalender auf „Kalender von ChurchTools laden“ klicken und die gewünschten Kalender anhaken, optional mit Farbe und Standardbild.
 5. In der Übersicht einmal „Jetzt synchronisieren“ – danach übernimmt WP-Cron.
 6. Den Block „ChurchTools Events“ auf einer Seite einfügen, oder das WPBakery-Element bzw. einen Shortcode. Fertige Beispiele stehen unter Events → Einbinden, für Gruppen unter Gruppen → Einbinden.

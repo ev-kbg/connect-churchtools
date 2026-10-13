@@ -118,7 +118,7 @@ final class ChangelogParserTest extends TestCase
         $this->assertCount(3, $releases, 'Der Tab „Updates“ zeigt die letzten drei Versionen.');
 
         foreach ($releases as $release) {
-            $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', $release['version']);
+            $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+(-kbg\.\d+)?$/', $release['version']);
             $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', $release['date']);
             $this->assertNotEmpty($release['items']);
 

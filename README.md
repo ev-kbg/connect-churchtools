@@ -7,6 +7,13 @@
 ![PHP](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fwirsindcgks%2Fconnect-churchtools%2Fmain%2Fupdate.json&query=%24.requires_php&label=PHP&prefix=%E2%89%A5)
 [![Lizenz](https://img.shields.io/github/license/wirsindcgks/connect-churchtools?label=Lizenz)](LICENSE)
 
+> **Fork der Ev. Kirchengemeinde Kirchberg an der Murr** von [wirsindcgks/connect-churchtools](https://github.com/wirsindcgks/connect-churchtools). Versionen heißen `<Upstream-Version>-kbg.<n>`, Updates kommen aus diesem Repository. Abweichungen vom Original:
+>
+> - Das Instanzfeld nimmt auch einen vollständigen Host an (z. B. `elkw3010.krz.tools`), für Instanzen, die unter `*.church.tools` nur per HTTP 302 weiterleiten.
+> - Update-Prüfung und Release-Links zeigen auf diesen Fork.
+>
+> Details im [Changelog](CHANGELOG.md). Änderungen des Originals kommen per `git merge upstream/main` herein.
+
 **Termine, Gruppen und Beiträge aus ChurchTools auf der eigenen WordPress-Website – einmal in ChurchTools gepflegt, auf der Website von selbst aktuell.**
 
 Das Plugin gleicht ausgewählte ChurchTools-Kalender, Gruppen-Homepages und auf Wunsch die Beiträge öffentlicher Gruppen regelmäßig ab und zeigt sie in fertig gestalteten Ansichten an. Farben, Ecken und Aufbau stellt man im Backend mit Live-Vorschau ein, ganz ohne CSS.

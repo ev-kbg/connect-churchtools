@@ -17,7 +17,7 @@ Nach der Aktivierung erscheint im linken WordPress-Menü **ChurchTools** mit vie
 
 ### 1. Verbindung herstellen
 
-*ChurchTools → Einstellungen → Verbindung*: den Instanz-Namen eintragen – bei `https://musterkirche.church.tools` also `musterkirche` – und den API-Key hinterlegen.
+*ChurchTools → Einstellungen → Verbindung*: den Instanz-Namen eintragen – bei `https://musterkirche.church.tools` also `musterkirche` – und den API-Key hinterlegen. Läuft die Instanz unter einer anderen Adresse (etwa `https://musterkirche.krz.tools`), kommt der ganze Host ins Feld.
 
 Der Key ist ein Login-Token aus ChurchTools. Welche Kalender das Plugin sieht, hängt an den Rechten des zugehörigen Zugangs. Am besten legt man in ChurchTools einen eigenen Benutzer nur für die Website an, der die übernommenen Kalender und Räume sehen darf und sonst nichts. Diesen Benutzer **nicht in Gruppen aufnehmen**: Als Mitglied sähe er auch Beiträge, die nur für die Gruppe gedacht sind. Das Plugin filtert sie heraus, aber was der Key nicht sieht, kann auch nicht versehentlich auf die Website geraten. Ein Login-Token läuft nicht ab.
 

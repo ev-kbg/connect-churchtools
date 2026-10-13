@@ -42,7 +42,7 @@ final class SettingsPage
      * beide. Der abschliessende Schraegstrich gehoert dazu, die Links haengen
      * ihre Pfade direkt an.
      */
-    private const REPO_URL = 'https://github.com/wirsindcgks/connect-churchtools/';
+    private const REPO_URL = 'https://github.com/ev-kbg/connect-churchtools/';
 
     /**
      * Der Stil ist die Grundlage, auf der Kachel und Detailansicht aufsetzen —
@@ -853,16 +853,21 @@ final class SettingsPage
     /**
      * Accepts either a bare instance name ("musterkirche") or a full URL a user
      * might paste by habit ("https://musterkirche.church.tools/") and normalizes
-     * both to "musterkirche".
+     * both to "musterkirche". Instances ChurchTools serves under another domain
+     * (e.g. "musterkirche.krz.tools", which *.church.tools only 302s to) keep
+     * their full host; anything that is not a plain host name becomes empty.
      */
     private static function sanitizeInstance(string $raw): string
     {
-        $raw = trim($raw);
-        $raw = (string) preg_replace('#^https?://#i', '', $raw);
-        $raw = (string) preg_replace('#\.church\.tools.*$#i', '', $raw);
-        $raw = trim($raw, "/ \t\n\r\0\x0B");
+        $raw = (string) preg_replace('#^https?://#', '', strtolower(trim($raw)));
+        $host = (string) preg_split('#[/?\#:]#', $raw)[0];
+        $host = (string) preg_replace('#\.church\.tools$#', '', trim($host, '.'));
 
-        return (string) preg_replace('/[^a-z0-9-]/', '', strtolower($raw));
+        if (!str_contains($host, '.')) {
+            return (string) preg_replace('/[^a-z0-9-]/', '', $host);
+        }
+
+        return preg_match('/^[a-z0-9-]+(\.[a-z0-9-]+)+$/', $host) === 1 ? $host : '';
     }
 
     /**
@@ -934,14 +939,12 @@ final class SettingsPage
     {
         printf(
             '<span class="ctp-instance-row">'
-            . '<code>https://</code>'
-            . '<input type="text" id="ctp-instance" name="%1$s[instance]" value="%2$s" class="regular-text" placeholder="musterkirche" pattern="[a-z0-9-]+" />'
-            . '<code>.church.tools</code>'
+            . '<input type="text" id="ctp-instance" name="%1$s[instance]" value="%2$s" class="regular-text" placeholder="musterkirche" pattern="[a-z0-9.\-]+" />'
             . '</span>'
             . '<p class="description">%3$s</p>',
             esc_attr(self::OPTION_KEY),
             esc_attr(Settings::get()['instance']),
-            esc_html__('Nur der Instanz-Name eintragen, z. B. „musterkirche“ für https://musterkirche.church.tools', 'churchtools-plugin')
+            esc_html__('Der Instanz-Name, z. B. „musterkirche“ für https://musterkirche.church.tools. Läuft die Instanz unter einer anderen Adresse, den ganzen Host eintragen, z. B. „musterkirche.krz.tools“.', 'churchtools-plugin')
         );
     }
 
@@ -3281,7 +3284,7 @@ final class SettingsPage
                 printf(
                     /* translators: %s: link to the plugin's GitHub repository */
                     esc_html__('Dieses Plugin liegt nicht auf WordPress.org, sondern bezieht seine Updates aus den GitHub-Releases von %s. Das Repository ist öffentlich – es ist kein Zugangstoken nötig.', 'churchtools-plugin'),
-                    '<a href="' . esc_url(self::REPO_URL) . '" target="_blank" rel="noopener noreferrer">wirsindcgks/connect-churchtools</a>'
+                    '<a href="' . esc_url(self::REPO_URL) . '" target="_blank" rel="noopener noreferrer">ev-kbg/connect-churchtools</a>'
                 );
                 ?>
             </p>

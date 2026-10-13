@@ -643,6 +643,25 @@ final class SettingsPageTest extends TestCase
         $this->assertSame('musterkirche', $this->sanitizeInstance('muster kirche!'));
     }
 
+    public function testSanitizeInstanceStripsPathAndPortFromAChurchToolsAddress(): void
+    {
+        $this->assertSame('musterkirche', $this->sanitizeInstance('https://musterkirche.church.tools/?q=churchcal'));
+        $this->assertSame('musterkirche', $this->sanitizeInstance('musterkirche.church.tools:443'));
+    }
+
+    /** Fork-Patch: Instanzen, die *.church.tools nur per 302 weiterleitet. */
+    public function testSanitizeInstanceKeepsAFullHostOutsideChurchTools(): void
+    {
+        $this->assertSame('musterkirche.krz.tools', $this->sanitizeInstance('musterkirche.krz.tools'));
+        $this->assertSame('musterkirche.krz.tools', $this->sanitizeInstance(' https://MUSTERKIRCHE.krz.tools/api/info '));
+    }
+
+    public function testSanitizeInstanceRejectsAHostWithCharactersAHostCannotHave(): void
+    {
+        $this->assertSame('', $this->sanitizeInstance('muster_kirche.krz.tools'));
+        $this->assertSame('', $this->sanitizeInstance('user@evil.example'));
+    }
+
     public function testResolveCalendarIdsPassesThroughNumericIds(): void
     {
         ctp_test_set_option('ctp_settings', ['calendars' => []]);

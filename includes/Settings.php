@@ -156,9 +156,14 @@ final class Settings
         return self::buildBaseUrl(self::get()['instance']);
     }
 
+    /** Ein Instanzname wird zu <name>.church.tools, ein vollständiger Host (mit Punkt) bleibt, wie er ist. */
     public static function buildBaseUrl(string $instance): string
     {
-        return $instance === '' ? '' : "https://{$instance}.church.tools";
+        if ($instance === '') {
+            return '';
+        }
+
+        return str_contains($instance, '.') ? "https://{$instance}" : "https://{$instance}.church.tools";
     }
 
     public static function getEnabledCalendarIds(): array

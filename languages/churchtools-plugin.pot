@@ -901,8 +901,8 @@ msgstr ""
 msgid "Bitte Instanz und API-Key eingeben."
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:944
-msgid "Nur der Instanz-Name eintragen, z. B. „musterkirche“ für https://musterkirche.church.tools"
+#: includes/Admin/SettingsPage.php:947
+msgid "Der Instanz-Name, z. B. „musterkirche“ für https://musterkirche.church.tools. Läuft die Instanz unter einer anderen Adresse, den ganzen Host eintragen, z. B. „musterkirche.krz.tools“."
 msgstr ""
 
 #: includes/Admin/SettingsPage.php:954
