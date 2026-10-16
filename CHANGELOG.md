@@ -5,6 +5,18 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.38.0-kbg.5] - 2026-10-17
+
+### Fixed
+
+- **Gruppen-Shortcode ohne Homepage.** `[ctp_groups]` zeigt ohne `homepage`-Attribut jetzt Gruppen aus allen aktiven Homepages. So bleiben Gruppenlisten mit mehreren aktiven Homepages nicht leer.
+- **Markdown-Links in Beschreibungen.** Einfache HTTP(S)-Links der Form `[Text](URL)` werden korrekt dargestellt; ein Backslash vor einem Zeilenumbruch bleibt nicht mehr sichtbar.
+
+### Changed
+
+- **Gruppenfinder.** Veranstalter und Kategorie sind beschriftet, der Wochentag ist kein eigener Filter mehr, und die allgemeine Frageüberschrift entfällt. Der Wochentag bleibt in der Suche enthalten.
+- **Gruppen aus allen Homepages filtern.** Mit `[ctp_groups finder="1"]` gibt es zusätzlich eine Veranstalter-Auswahl. Gruppen auf mehreren Homepages erscheinen nur einmal und bleiben für jede zugehörige Auswahl sichtbar.
+
 ## [1.38.0-kbg.4] - 2026-10-16
 
 ### Fixed
