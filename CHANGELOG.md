@@ -5,6 +5,12 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.38.0-kbg.2] - 2026-10-16
+
+### Added
+
+- **Gruppen-Button ein- und ausblenden.** Unter *Gruppen → Einbinden* lässt sich der Button „In ChurchTools ansehen“ für alle Gruppenlisten, hervorgehobenen Ansichten und Popups deaktivieren. Standardmäßig bleibt er sichtbar, sodass bestehende Einbindungen unverändert bleiben.
+
 ## [1.38.0-kbg.1] - 2026-10-13
 
 Erste Version des Forks [ev-kbg/connect-churchtools](https://github.com/ev-kbg/connect-churchtools) auf Basis von 1.38.0. Ersetzt das bisherige Begleit-Plugin „ChurchTools Image Bridge – Kirchberg“.
