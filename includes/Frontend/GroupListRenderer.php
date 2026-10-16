@@ -75,13 +75,10 @@ final class GroupListRenderer
 
     /**
      * Die Reihen des Gruppenfinders in ihrer Reihenfolge, je mit dem Filtertyp
-     * der Homepage in ChurchTools, der sie freigibt. Die Kategorie steht oben
-     * und ohne eigene Ueberschrift - sie ist das Thema, wie die Kalender im
-     * Eventfinder, und die Frage darueber benennt sie.
+     * der Homepage in ChurchTools, der sie freigibt.
      */
     public const FINDER_FILTERS = [
         'category' => 'groupcategory',
-        'weekday' => 'weekday',
         'target' => 'targetgroups',
     ];
 
@@ -89,11 +86,11 @@ final class GroupListRenderer
     private const TARGET_EVERYONE = 'everyone';
 
     /**
-     * @param array{source?: string, homepage?: string, groups?: string, layout?: string, columns?: int|string, finder?: bool|int|string, search?: bool|int|string} $args
+     * @param array{source?: string, homepage?: string, groups?: string, layout?: string, columns?: int|string, finder?: bool|int|string, search?: bool|int|string, all_homepages?: bool} $args
      */
     public function render(array $args): string
     {
-        $args = wp_parse_args($args, ['source' => '', 'homepage' => '', 'groups' => '', 'layout' => 'grid', 'columns' => self::DEFAULT_COLUMNS, 'finder' => false, 'search' => false]);
+        $args = wp_parse_args($args, ['source' => '', 'homepage' => '', 'groups' => '', 'layout' => 'grid', 'columns' => self::DEFAULT_COLUMNS, 'finder' => false, 'search' => false, 'all_homepages' => false]);
 
         // `source` sagt ausdruecklich, welche Angabe gilt - die andere kann in
         // Block und WPBakery noch gespeichert sein, nachdem umgeschaltet wurde.
@@ -110,7 +107,7 @@ final class GroupListRenderer
         $args['show_cta'] = GroupSettings::showCta();
         $args = array_merge($args, EventListRenderer::designArgs(Settings::get()));
 
-        $selected = self::selectGroups((string) $args['homepage'], (string) $args['groups']);
+        $selected = self::selectGroups((string) $args['homepage'], (string) $args['groups'], (bool) $args['all_homepages']);
         $groups = self::prepareGroups(
             $selected,
             GroupSync::imageMap(),
@@ -124,8 +121,14 @@ final class GroupListRenderer
         $args['search'] = $args['layout'] === 'grid' && filter_var($args['search'], FILTER_VALIDATE_BOOLEAN) && $groups !== [];
         $args['show_toolbar'] = $args['finder'] || $args['search'];
         $args['finder_rows'] = $args['finder']
-            ? self::finderRows($groups, GroupSync::filtersFor(self::sourceHomepages((string) $args['homepage'], (string) $args['groups'], $selected)))
+            ? self::finderRows($groups, GroupSync::filtersFor(self::sourceHomepages((string) $args['homepage'], (string) $args['groups'], $selected, (bool) $args['all_homepages'])))
             : [];
+        if ($args['finder'] && $args['all_homepages']) {
+            $homepageRow = self::homepageFinderRow($groups, GroupSettings::enabledHomepages());
+            if ($homepageRow !== null) {
+                array_unshift($args['finder_rows'], $homepageRow);
+            }
+        }
 
         $file = $args['layout'] === 'featured' ? 'group-featured.php' : 'group-grid.php';
         $template = locate_template('churchtools-plugin/' . $file);
@@ -145,7 +148,7 @@ final class GroupListRenderer
      *
      * @return list<array>
      */
-    public static function selectGroups(string $homepage, string $groups): array
+    public static function selectGroups(string $homepage, string $groups, bool $allHomepages = false): array
     {
         $ids = GroupSync::parseIds($groups);
 
@@ -159,9 +162,51 @@ final class GroupListRenderer
             return [];
         }
 
+        if ($allHomepages && trim($homepage) === '') {
+            return GroupSync::groupsForHomepages(array_map('intval', array_keys(GroupSettings::enabledHomepages())));
+        }
+
         $homepageId = GroupSettings::resolveHomepageId($homepage);
 
         return $homepageId !== null ? GroupSync::groupsFor($homepageId) : [];
+    }
+
+    /**
+     * Die Gruppen-Homepage-Auswahl des Finders. Leere Homepages und Homepages,
+     * die keine Gruppe aus der Gesamtliste eingrenzen, erhalten keinen Knopf.
+     *
+     * @param list<array> $groups
+     * @param array<int, array{name: string, hash: string, enabled: bool}> $homepages
+     *
+     * @return array{key: string, options: list<string>, labels: array<int, string>}|null
+     */
+    private static function homepageFinderRow(array $groups, array $homepages): ?array
+    {
+        if ($groups === []) {
+            return null;
+        }
+
+        $options = [];
+        $labels = [];
+
+        foreach ($homepages as $id => $homepage) {
+            $id = (int) $id;
+            $matching = array_filter(
+                $groups,
+                static fn (array $group): bool => in_array($id, $group['homepage_ids'] ?? [], true)
+            );
+
+            if ($matching === [] || count($matching) >= count($groups)) {
+                continue;
+            }
+
+            $value = (string) $id;
+            $options[] = $value;
+            $name = trim((string) ($homepage['name'] ?? ''));
+            $labels[$value] = $name !== '' ? $name : sprintf('#%d', $id);
+        }
+
+        return $options !== [] ? ['key' => 'homepage', 'options' => $options, 'labels' => $labels] : null;
     }
 
     /**
@@ -173,10 +218,14 @@ final class GroupListRenderer
      *
      * @return int[]
      */
-    private static function sourceHomepages(string $homepage, string $groupIds, array $selected): array
+    private static function sourceHomepages(string $homepage, string $groupIds, array $selected, bool $allHomepages = false): array
     {
         if (GroupSync::parseIds($groupIds) !== []) {
             return GroupSync::homepagesContaining(array_map(static fn (array $group): int => (int) ($group['id'] ?? 0), $selected));
+        }
+
+        if ($allHomepages && trim($homepage) === '') {
+            return array_map('intval', array_keys(GroupSettings::enabledHomepages()));
         }
 
         $homepageId = GroupSettings::resolveHomepageId($homepage);
@@ -338,6 +387,7 @@ final class GroupListRenderer
             $group['finder_target'] = ($group['target_group_key'] ?? '') === self::TARGET_EVERYONE
                 ? ''
                 : trim((string) ($group['target_group'] ?? ''));
+            $group['finder_homepages'] = implode(',', array_map('strval', $group['homepage_ids'] ?? []));
             $group['finder_search'] = mb_strtolower(implode(' ', array_filter([
                 (string) $group['name'],
                 $group['finder_category'],

@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace ChurchToolsPlugin\Tests\Frontend;
 
 use ChurchToolsPlugin\Frontend\GroupListRenderer;
+use ChurchToolsPlugin\Frontend\Shortcode;
 use ChurchToolsPlugin\Groups\GroupSettings;
 use ChurchToolsPlugin\Groups\GroupSync;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Gruppenfinder (1.31.0): Knoepfe fuer Kategorie, Wochentag und Zielgruppe
+ * Gruppenfinder (1.31.0): Knoepfe fuer Kategorie und Zielgruppe
  * (`finder`) und Suchleiste (`search`) ueber dem Raster. Die Filterregel selbst steht zweimal - in
  * GroupListRenderer::finderMatches() fuer die Knopfauswahl und in
  * frontend.js fuer das Ausblenden; getestet ist hier die PHP-Seite.
@@ -23,7 +24,7 @@ final class GroupFinderTest extends TestCase
         ctp_test_reset_attachments();
     }
 
-    /** Knoepfe in der Reihenfolge der Stammdaten, Montag bis Sonntag. */
+    /** Die Filterknöpfe folgen der Reihenfolge der ChurchTools-Stammdaten. */
     public function testRowsAreSortedByTheSortKeyFromChurchTools(): void
     {
         $rows = GroupListRenderer::finderRows($this->prepared([
@@ -34,7 +35,6 @@ final class GroupFinderTest extends TestCase
 
         $this->assertSame([
             ['key' => 'category', 'options' => ['Kinder', 'Musik', 'Hauskreis']],
-            ['key' => 'weekday', 'options' => ['Montag', 'Donnerstag', 'Sonntag']],
         ], $rows);
     }
 
@@ -67,17 +67,6 @@ final class GroupFinderTest extends TestCase
         $this->assertSame('', $groups[2]['finder_target']);
     }
 
-    /** Kategorie und Wochentag muessen passen: Eine Gruppe ohne Tag grenzt „Donnerstag" ein. */
-    public function testAGroupWithoutWeekdayIsNarrowedOut(): void
-    {
-        $rows = GroupListRenderer::finderRows($this->prepared([
-            $this->group(1, ['weekday' => 'Donnerstag']),
-            $this->group(2, ['weekday' => '']),
-        ]), null);
-
-        $this->assertSame([['key' => 'weekday', 'options' => ['Donnerstag']]], $rows);
-    }
-
     /** ChurchTools entscheidet: Ist ein Filter an der Homepage aus, gibt es keine Reihe. */
     public function testOnlyFiltersTheHomepageShows(): void
     {
@@ -86,7 +75,8 @@ final class GroupFinderTest extends TestCase
             $this->group(2, ['weekday' => 'Freitag', 'category' => 'Kinder']),
         ]);
 
-        $this->assertSame(['weekday'], array_column(GroupListRenderer::finderRows($groups, ['weekday', 'targetgroups']), 'key'));
+        $this->assertSame([], GroupListRenderer::finderRows($groups, ['weekday', 'targetgroups']));
+        $this->assertSame(['category'], array_column(GroupListRenderer::finderRows($groups, ['groupcategory']), 'key'));
         $this->assertSame([], GroupListRenderer::finderRows($groups, []));
     }
 
@@ -100,9 +90,11 @@ final class GroupFinderTest extends TestCase
         $html = (new GroupListRenderer())->render(['homepage' => 'Kleingruppen', 'finder' => true, 'search' => true]);
 
         $this->assertStringContainsString('ctp-groups__finder', $html);
-        $this->assertStringContainsString('Welche Gruppe passt zu dir?', $html);
+        $this->assertStringContainsString('Kategorie', $html);
+        $this->assertStringNotContainsString('Welche Gruppe passt zu dir?', $html);
+        $this->assertStringNotContainsString('Wochentag', $html);
         $this->assertStringContainsString('data-ctp-group-filter="category" data-ctp-group-value="Musik &quot;laut&quot;"', (string) preg_replace('/\s+/', ' ', $html));
-        $this->assertStringContainsString('data-ctp-group-weekday="Freitag"', $html);
+        $this->assertStringContainsString('data-ctp-group-weekday="Freitag"', $html, 'Der Wochentag bleibt fuer die Suche ein Suchbegriff.');
         $this->assertStringContainsString('data-ctp-group-category="Musik &quot;laut&quot;"', $html);
         $this->assertStringContainsString('data-ctp-group-search="gruppe 1 musik &quot;laut&quot; montag jeder wir singen zweite zeile"', $html);
         $this->assertStringContainsString('Gruppen durchsuchen', $html);
@@ -120,7 +112,8 @@ final class GroupFinderTest extends TestCase
         $finderOnly = (new GroupListRenderer())->render(['homepage' => 'Kleingruppen', 'finder' => true]);
         $searchOnly = (new GroupListRenderer())->render(['homepage' => 'Kleingruppen', 'search' => true]);
 
-        $this->assertStringContainsString('data-ctp-group-value="Freitag"', $finderOnly);
+        $this->assertStringNotContainsString('data-ctp-group-value="Freitag"', $finderOnly);
+        $this->assertStringNotContainsString('Wochentag', $finderOnly);
         $this->assertStringNotContainsString('ctp-events__search-input', $finderOnly);
 
         $this->assertStringContainsString('ctp-events__search-input', $searchOnly);
@@ -143,17 +136,18 @@ final class GroupFinderTest extends TestCase
         }
     }
 
-    /**
-     * Daten aus einem Abgleich vor 1.31.0 kennen die Filter der Homepage noch
-     * nicht - bis zum naechsten Lauf schraenkt der Finder dann nicht ein.
-     */
+    /** Alte Daten ohne Filterfreigaben lassen verfügbare Kategorieknöpfe zu. */
     public function testUnknownHomepageFiltersAllowEveryRow(): void
     {
-        $this->homepageWith([$this->group(1, ['weekday' => 'Montag']), $this->group(2, ['weekday' => 'Freitag'])], null);
+        $this->homepageWith([
+            $this->group(1, ['category' => 'Musik']),
+            $this->group(2, ['category' => 'Kinder']),
+        ], null);
 
         $html = (new GroupListRenderer())->render(['homepage' => 'Kleingruppen', 'finder' => '1']);
 
-        $this->assertStringContainsString('data-ctp-group-value="Freitag"', $html);
+        $this->assertStringContainsString('data-ctp-group-value="Musik"', $html);
+        $this->assertStringNotContainsString('Wochentag', $html);
     }
 
     /** Einzelne Gruppen: Es gelten die Filter der Homepages, auf denen sie stehen. */
@@ -164,13 +158,68 @@ final class GroupFinderTest extends TestCase
             6 => ['name' => 'Mitarbeit', 'hash' => 'XyZ789', 'enabled' => true],
         ]]);
         ctp_test_set_option(GroupSync::DATA_OPTION, [
-            9 => ['fetched' => '', 'empty_runs' => 0, 'filters' => [], 'groups' => [$this->group(1, ['weekday' => 'Montag'])]],
-            6 => ['fetched' => '', 'empty_runs' => 0, 'filters' => ['weekday'], 'groups' => [$this->group(2, ['weekday' => 'Freitag'])]],
+            9 => ['fetched' => '', 'empty_runs' => 0, 'filters' => [], 'groups' => [$this->group(1, ['category' => 'Musik'])]],
+            6 => ['fetched' => '', 'empty_runs' => 0, 'filters' => ['groupcategory'], 'groups' => [$this->group(2, ['category' => 'Kinder'])]],
         ]);
 
         $html = (new GroupListRenderer())->render(['groups' => '1,2', 'finder' => true]);
 
-        $this->assertStringContainsString('data-ctp-group-value="Montag"', $html);
+        $this->assertStringContainsString('data-ctp-group-value="Kinder"', $html);
+        $this->assertStringContainsString('data-ctp-group-value="Musik"', $html, 'Auch der Filter einer zweiten Homepage gilt.');
+    }
+
+    public function testNoHomepageShowsAllGroupsAndAddsHomepageFinderFilter(): void
+    {
+        ctp_test_set_option(GroupSettings::OPTION_KEY, ['homepages' => [
+            9 => ['name' => 'Kleingruppen', 'hash' => 'AbC123', 'enabled' => true],
+            6 => ['name' => 'Mitarbeit', 'hash' => 'XyZ789', 'enabled' => true],
+        ]]);
+        ctp_test_set_option(GroupSync::DATA_OPTION, [
+            9 => ['fetched' => '', 'empty_runs' => 0, 'filters' => ['groupcategory'], 'groups' => [
+                $this->group(1, ['name' => 'Gruppe eins', 'category' => 'Musik']),
+                $this->group(2, ['name' => 'Gemeinsame Gruppe', 'category' => 'Gemeinschaft']),
+            ]],
+            6 => ['fetched' => '', 'empty_runs' => 0, 'filters' => ['groupcategory'], 'groups' => [
+                $this->group(2, ['name' => 'Gemeinsame Gruppe', 'category' => 'Gemeinschaft']),
+                $this->group(3, ['name' => 'Gruppe drei', 'category' => 'Sport']),
+            ]],
+        ]);
+
+        $all = GroupListRenderer::selectGroups('', '', true);
+        $this->assertCount(3, $all, 'Eine Gruppe auf zwei Homepages erscheint nur einmal.');
+        $this->assertSame([9, 6], $all[1]['homepage_ids']);
+
+        $html = (new Shortcode())->renderGroups(['finder' => '1']);
+        $flatHtml = (string) preg_replace('/\s+/', ' ', $html);
+
+        $this->assertStringContainsString('Veranstalter', $html);
+        $this->assertStringContainsString('Kategorie', $html);
+        $this->assertStringNotContainsString('Welche Gruppe passt zu dir?', $html);
+        $this->assertStringNotContainsString('Wochentag', $html);
+        $this->assertStringContainsString('data-ctp-group-filter="homepage" data-ctp-group-value="9"', $flatHtml);
+        $this->assertStringContainsString('data-ctp-group-filter="homepage" data-ctp-group-value="6"', $flatHtml);
+        $this->assertStringContainsString('>Kleingruppen</button>', $html);
+        $this->assertStringContainsString('>Mitarbeit</button>', $html);
+        $this->assertStringContainsString('data-ctp-group-homepages="9,6"', $flatHtml);
+    }
+
+    public function testAnExplicitHomepageDoesNotShowTheHomepageFilter(): void
+    {
+        ctp_test_set_option(GroupSettings::OPTION_KEY, ['homepages' => [
+            9 => ['name' => 'Kleingruppen', 'hash' => 'AbC123', 'enabled' => true],
+            6 => ['name' => 'Mitarbeit', 'hash' => 'XyZ789', 'enabled' => true],
+        ]]);
+        ctp_test_set_option(GroupSync::DATA_OPTION, [
+            9 => ['fetched' => '', 'empty_runs' => 0, 'groups' => [$this->group(1)]],
+            6 => ['fetched' => '', 'empty_runs' => 0, 'groups' => [$this->group(2)]],
+        ]);
+
+        $html = (new GroupListRenderer())->render(['homepage' => 'Kleingruppen', 'finder' => '1']);
+
+        $this->assertStringContainsString('Gruppe 1', $html);
+        $this->assertStringNotContainsString('Gruppe 2', $html);
+        $this->assertStringNotContainsString('data-ctp-group-filter="homepage"', $html);
+        $this->assertStringNotContainsString('Welche Gruppe passt zu dir?', $html);
     }
 
     /** @param list<array> $groups */

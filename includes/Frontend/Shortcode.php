@@ -30,8 +30,8 @@ final class Shortcode
 
     /**
      * [ctp_groups homepage="Kleingruppen" columns="3"] - die Homepage als Name
-     * oder ID, wie `calendar` bei den Terminen. Ohne Angabe gilt die einzige
-     * angehakte Homepage (siehe GroupSettings::resolveHomepageId()).
+     * oder ID, wie `calendar` bei den Terminen. Ohne Angabe erscheinen die
+     * Gruppen aller angehakten Homepages.
      *
      * [ctp_groups groups="514,269" layout="featured"] - einzelne Gruppen nach
      * ID, in dieser Reihenfolge, statt einer Homepage (plan.md, G1/G2). IDs und
@@ -40,7 +40,7 @@ final class Shortcode
      * `source="homepage"` sagt es anders (so schreibt es das WPBakery-Element).
      *
      * [ctp_groups homepage="Kleingruppen" finder="1" search="1"] - mit
-     * Gruppenfinder (Kategorie, Wochentag, Zielgruppe) und Suchleiste ueber
+     * Gruppenfinder (Homepage, Kategorie, Wochentag, Zielgruppe) und Suchleiste ueber
      * dem Raster; zwei Schalter wie `eventfinder` und `search` bei den Terminen.
      */
     public function renderGroups($atts): string
@@ -64,6 +64,9 @@ final class Shortcode
             // Gelesen wie bei [ctp_events], damit dieselbe Schreibweise dasselbe tut.
             'finder' => (bool) $atts['finder'],
             'search' => (bool) $atts['search'],
+            'all_homepages' => trim((string) $atts['homepage']) === ''
+                && $atts['source'] !== 'groups'
+                && (trim((string) $atts['groups']) === '' || $atts['source'] === 'homepage'),
         ]);
     }
 

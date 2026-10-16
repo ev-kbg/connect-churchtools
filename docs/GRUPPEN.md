@@ -4,7 +4,7 @@ Zurück zur [Übersicht](../README.md).
 
 Als Ersatz für den iframe einer Gruppen-Homepage: dieselben Gruppen, aber in der Optik des Plugins – mit Treffzeit, Ort, Zielgruppe, Auszug und, wo die Gruppe eine Höchstzahl hat, den freien Plätzen. Der Button „In ChurchTools ansehen“ führt zur Gruppe in ChurchTools, wo man sich anmeldet. Unter *Gruppen → Einbinden → Darstellung der Gruppen* lässt sich dieser Button global für Raster, hervorgehobene Ansicht und Popup ausblenden.
 
-Auf Wunsch mit **Gruppenfinder**: Knöpfe für Kategorie, Wochentag und Zielgruppe plus Suche, wie der Eventfinder bei den Terminen.
+Auf Wunsch mit **Gruppenfinder**: Knöpfe für Veranstalter, Kategorie und Zielgruppe plus Suche. Die Veranstalter-Auswahl erscheint, wenn der Shortcode alle aktiven Homepages zusammen anzeigt.
 
 Voraussetzung ist eine aktive Homepage unter *ChurchTools → Gruppen → Homepages*, siehe [Einrichtung, Schritt 7](EINRICHTUNG.md#7-gruppen-zeigen-optional).
 
@@ -23,20 +23,19 @@ Voraussetzung ist eine aktive Homepage unter *ChurchTools → Gruppen → Homepa
 Über dem Raster stehen auf Wunsch Knöpfe zum Eingrenzen und ein Suchfeld. Eingeschaltet wird er im Block und im WPBakery-Element mit „Gruppenfinder anzeigen“, im Shortcode mit `finder="1"`; das Suchfeld kommt mit „Suchleiste anzeigen“ bzw. `search="1"` dazu. Beides heißt und wirkt wie beim Eventfinder der Termine, und die Suchleiste gibt es auch ohne Finder.
 
 - **Kategorie** oben, als Themen – etwa Hauskreise, Musik oder Kinder & Jugend.
-- **Wochentag** von Montag bis Sonntag.
 - **Für wen:** die Zielgruppe. „Jeder“ ist kein eigener Knopf, sondern passt zu jeder Auswahl – wer Frauen wählt, sieht auch die offenen Gruppen.
-- **Suche** (eigener Schalter) über Name, Kategorie, Wochentag, Zielgruppe und Beschreibung.
+- **Suche** (eigener Schalter) über Name, Kategorie, Wochentag, Zielgruppe und Beschreibung. Der Wochentag bleibt auf den Kacheln sichtbar und durchsuchbar, ist aber kein eigener Filter.
 
-<img src="screenshots/gruppenfinder.png" width="600" alt="Gruppenfinder mit Knöpfen für Kategorie, Wochentag und Zielgruppe, darunter ein Suchfeld und drei Gruppenkacheln">
+<img src="screenshots/gruppenfinder.png" width="600" alt="Gruppenfinder mit Knöpfen für Veranstalter, Kategorie und Zielgruppe, darunter ein Suchfeld und Gruppenkacheln">
 
-Mehrere Knöpfe greifen zusammen: Musik und Sonntag zeigt die Musikgruppen am Sonntag. Gefiltert wird im Browser, ohne Neuladen.
+Mehrere Knöpfe greifen zusammen: Die Auswahl eines Veranstalters und einer Kategorie schränkt die Liste auf passende Gruppen ein. Gefiltert wird im Browser, ohne Neuladen.
 
 **Die Knöpfe kommen aus ChurchTools.** Es erscheinen nur Filter, die die Gruppen-Homepage in ChurchTools eingeschaltet hat, und nur Knöpfe, die etwas eingrenzen: Haben alle Gruppen dieselbe oder gar keine Kategorie, fällt die Reihe weg. Damit der Finder nützt, pflegen die Gruppenverantwortlichen in ChurchTools je Gruppe:
 
 | Feld in ChurchTools | Wofür |
 | --- | --- |
 | Kategorie | die Themenknöpfe – die Kategorien selbst legt ein Administrator in den Stammdaten an |
-| Wochentag und Treffzeit | Knopf „Wochentag“, Zeile auf der Kachel |
+| Wochentag und Treffzeit | Zeile auf der Kachel; Wochentag wird auch von der Suche erfasst |
 | Treffpunkt | Ortszeile auf der Kachel und im Popup |
 | Zielgruppe | Knopf „Für wen“ – „Jeder“ nur, wenn die Gruppe wirklich allen offen steht |
 | Bild und Beschreibung | Kachel, Popup und Suche |
@@ -52,11 +51,14 @@ Neue Angaben erscheinen nach dem nächsten Gruppen-Abgleich.
 
 ```
 [ctp_groups homepage="Kleingruppen" columns="3"]
+[ctp_groups finder="1" search="1"]
 [ctp_groups groups="514,269" layout="featured"]
 [ctp_groups homepage="Kleingruppen" finder="1" search="1"]
 ```
 
 Unter *Gruppen → Homepages* steht neben jeder Homepage der passende Shortcode zum Kopieren, unter *Gruppen → Einbinden* stehen fertige Beispiele samt allen Optionen.
+
+Ohne `homepage` oder `groups` erscheinen alle Gruppen der aktiven Homepages; Gruppen, die auf mehreren Homepages stehen, werden nur einmal ausgegeben. Ist dabei `finder="1"` gesetzt, zeigt der Finder zusätzlich Knöpfe für die Gruppen-Homepages. Ein ausgewählter Homepage-Knopf grenzt die Liste auf deren Gruppen ein.
 
 **Einzelne Gruppen** stehen mit `groups="…"` in der angegebenen Reihenfolge da; die IDs stehen unter *Gruppen → Gruppenliste*. Wählbar sind nur Gruppen der aktiven Homepages. Fällt eine gewählte Gruppe dort heraus, verschwindet sie von der Seite; der Block zeigt sie als „nicht mehr verfügbar“.
 

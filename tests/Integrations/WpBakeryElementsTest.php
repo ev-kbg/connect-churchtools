@@ -218,9 +218,9 @@ namespace ChurchToolsPlugin\Tests\Integrations {
             ctp_test_set_option(GroupSettings::OPTION_KEY, ['homepages' => [
                 9 => ['name' => 'Kleingruppen', 'hash' => 'AbC123', 'enabled' => true],
             ]]);
-            ctp_test_set_option(GroupSync::DATA_OPTION, [9 => ['fetched' => '', 'empty_runs' => 0, 'filters' => ['weekday'], 'groups' => [
-                ['id' => 1, 'name' => 'Chor', 'note' => '', 'image_url' => '', 'weekday' => 'Montag', 'meeting_time' => '', 'target_group' => '', 'max_members' => null, 'free_places' => null, 'waitinglist' => false, 'url' => '#'],
-                ['id' => 2, 'name' => 'Hauskreis', 'note' => '', 'image_url' => '', 'weekday' => 'Freitag', 'meeting_time' => '', 'target_group' => '', 'max_members' => null, 'free_places' => null, 'waitinglist' => false, 'url' => '#'],
+            ctp_test_set_option(GroupSync::DATA_OPTION, [9 => ['fetched' => '', 'empty_runs' => 0, 'filters' => ['groupcategory'], 'groups' => [
+                ['id' => 1, 'name' => 'Chor', 'note' => '', 'image_url' => '', 'weekday' => 'Montag', 'category' => 'Musik', 'meeting_time' => '', 'target_group' => '', 'max_members' => null, 'free_places' => null, 'waitinglist' => false, 'url' => '#'],
+                ['id' => 2, 'name' => 'Hauskreis', 'note' => '', 'image_url' => '', 'weekday' => 'Freitag', 'category' => 'Hauskreis', 'meeting_time' => '', 'target_group' => '', 'max_members' => null, 'free_places' => null, 'waitinglist' => false, 'url' => '#'],
             ]]]);
 
             $shortcode = new Shortcode();
@@ -228,7 +228,8 @@ namespace ChurchToolsPlugin\Tests\Integrations {
             $without = $shortcode->renderGroups(['source' => 'homepage', 'homepage' => 'Kleingruppen']);
 
             $this->assertStringContainsString('ctp-groups__finder', $with);
-            $this->assertStringContainsString('data-ctp-group-value="Freitag"', $with);
+            $this->assertStringContainsString('data-ctp-group-value="Musik"', $with);
+            $this->assertStringNotContainsString('Wochentag', $with);
             $this->assertStringNotContainsString('ctp-groups__finder', $without);
         }
     }

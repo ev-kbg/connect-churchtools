@@ -531,6 +531,55 @@ final class GroupSync
     }
 
     /**
+     * Alle Gruppen ausgewaehlter Homepages, ohne doppelte Gruppen-IDs und mit
+     * den Homepages, auf denen jede Gruppe erscheint.
+     *
+     * Bei mehrfach gelisteten Gruppen gewinnt wie in selectableGroups() der
+     * Eintrag mit Bild; die Homepage-Zugehoerigkeiten werden zusammengefuehrt.
+     *
+     * @param int[] $homepageIds
+     *
+     * @return list<array>
+     */
+    public static function groupsForHomepages(array $homepageIds): array
+    {
+        $enabled = GroupSettings::enabledHomepages();
+        $groups = [];
+
+        foreach ($homepageIds as $homepageId) {
+            $homepageId = (int) $homepageId;
+            if (!array_key_exists($homepageId, $enabled)) {
+                continue;
+            }
+
+            foreach (self::groupsFor($homepageId) as $group) {
+                $id = (int) ($group['id'] ?? 0);
+                if ($id <= 0) {
+                    continue;
+                }
+
+                if (!isset($groups[$id])) {
+                    $group['homepage_ids'] = [$homepageId];
+                    $groups[$id] = $group;
+                    continue;
+                }
+
+                if (!in_array($homepageId, $groups[$id]['homepage_ids'], true)) {
+                    $groups[$id]['homepage_ids'][] = $homepageId;
+                }
+
+                if ((string) ($groups[$id]['image_url'] ?? '') === '' && (string) ($group['image_url'] ?? '') !== '') {
+                    $imageHomepages = $groups[$id]['homepage_ids'];
+                    $group['homepage_ids'] = $imageHomepages;
+                    $groups[$id] = $group;
+                }
+            }
+        }
+
+        return array_values($groups);
+    }
+
+    /**
      * Alle Gruppen der angehakten Homepages, nach Gruppen-ID, ohne Doppelte -
      * die Auswahl fuer „einzelne Gruppen" in Shortcode, Block und WPBakery.
      *

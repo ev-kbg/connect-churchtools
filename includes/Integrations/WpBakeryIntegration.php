@@ -489,7 +489,7 @@ final class WpBakeryIntegration
                 [
                     'type' => 'checkbox',
                     'heading' => __('Gruppenfinder anzeigen', 'churchtools-plugin'),
-                    'description' => __('Knöpfe für Kategorie, Wochentag und Zielgruppe – nur, wo sie in ChurchTools gepflegt sind. Mit „Suchleiste anzeigen“ steht das Suchfeld im Gruppenfinder.', 'churchtools-plugin'),
+                    'description' => __('Knöpfe für Kategorie und Zielgruppe – nur, wo sie in ChurchTools gepflegt sind. Ohne Homepage-Auswahl zusätzlich mit Veranstalter-Knöpfen. Mit „Suchleiste anzeigen“ steht das Suchfeld im Gruppenfinder.', 'churchtools-plugin'),
                     'param_name' => 'finder',
                     'admin_label' => true,
                     'value' => [__('Anzeigen', 'churchtools-plugin') => '1'],

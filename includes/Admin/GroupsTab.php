@@ -698,7 +698,7 @@ final class GroupsTab
                     </tr>
                     <tr>
                         <td><code>finder</code></td>
-                        <td><?php esc_html_e('Gruppenfinder: Knöpfe für Kategorie, Wochentag und Zielgruppe (nur grid). Mit search steht das Suchfeld im Gruppenfinder.', 'churchtools-plugin'); ?></td>
+                        <td><?php esc_html_e('Gruppenfinder: Knöpfe für Veranstalter (wenn alle Homepages angezeigt werden), Kategorie und Zielgruppe (nur grid). Mit search steht das Suchfeld im Gruppenfinder.', 'churchtools-plugin'); ?></td>
                         <td><code>0</code></td>
                     </tr>
                 </tbody>

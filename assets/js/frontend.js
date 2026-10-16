@@ -227,6 +227,12 @@
 			return true;
 		}
 
+		if (key === 'homepage') {
+			var groupHomepages = cell.getAttribute('data-ctp-group-homepages') || '';
+
+			return groupHomepages.split(',').indexOf(value) !== -1;
+		}
+
 		var groupValue = cell.getAttribute('data-ctp-group-' + key) || '';
 
 		return groupValue === value || (key === 'target' && groupValue === '');

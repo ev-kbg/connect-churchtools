@@ -2,7 +2,7 @@
 
 /**
  * Werkzeugleiste ueber dem Raster (group-grid.php): mit `finder` die
- * Knopfreihen fuer Kategorie, Wochentag und Zielgruppe, mit `search` das
+ * Knopfreihen fuer Veranstalter, Kategorie und Zielgruppe, mit `search` das
  * Suchfeld - zwei Schalter wie beim Eventfinder (partials/eventfinder.php),
  * dessen Suchfeld ebenfalls am eigenen Schalter haengt.
  *
@@ -24,44 +24,33 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$questionId = wp_unique_id('ctp-group-finder-question-');
 $rowTexts = [
     'category' => [
-        'label' => '',
-        'prev' => __('Vorherige Themen anzeigen', 'churchtools-plugin'),
-        'next' => __('Weitere Themen anzeigen', 'churchtools-plugin'),
-    ],
-    'weekday' => [
-        'label' => __('Wochentag', 'churchtools-plugin'),
-        'prev' => __('Vorherige Wochentage anzeigen', 'churchtools-plugin'),
-        'next' => __('Weitere Wochentage anzeigen', 'churchtools-plugin'),
+        'label' => __('Kategorie', 'churchtools-plugin'),
+        'prev' => __('Vorherige Kategorien anzeigen', 'churchtools-plugin'),
+        'next' => __('Weitere Kategorien anzeigen', 'churchtools-plugin'),
     ],
     'target' => [
         'label' => __('Für wen', 'churchtools-plugin'),
         'prev' => __('Vorherige Zielgruppen anzeigen', 'churchtools-plugin'),
         'next' => __('Weitere Zielgruppen anzeigen', 'churchtools-plugin'),
     ],
+    'homepage' => [
+        'label' => __('Veranstalter', 'churchtools-plugin'),
+        'prev' => __('Vorherige Veranstalter anzeigen', 'churchtools-plugin'),
+        'next' => __('Weitere Veranstalter anzeigen', 'churchtools-plugin'),
+    ],
 ];
 ?>
 <div class="ctp-events__toolbar<?php echo $args['finder'] ? ' ctp-events__eventfinder ctp-groups__finder' : ' ctp-groups__toolbar'; ?>">
-    <?php if ($args['finder']) : ?>
-    <p class="ctp-events__finder-label" id="<?php echo esc_attr($questionId); ?>">
-        <?php esc_html_e('Welche Gruppe passt zu dir?', 'churchtools-plugin'); ?>
-    </p>
-    <?php endif; ?>
     <?php foreach ($args['finder_rows'] as $row) : ?>
         <?php
         $texts = $rowTexts[$row['key']];
-        $labelId = $texts['label'] !== '' ? wp_unique_id('ctp-group-finder-' . $row['key'] . '-') : $questionId;
-        // Die Wochentage sind eine geschlossene Reihe wie die Zeitraeume im
-        // Eventfinder und bleiben deshalb einzeilig, statt umzubrechen.
-        $stripClass = $row['key'] === 'weekday' ? ' ctp-events__finder-strip--nowrap' : '';
+        $labelId = wp_unique_id('ctp-group-finder-' . $row['key'] . '-');
         ?>
         <div class="ctp-events__finder-row ctp-groups__finder-row--<?php echo esc_attr($row['key']); ?>">
-            <?php if ($texts['label'] !== '') : ?>
-                <span class="ctp-events__finder-row-label" id="<?php echo esc_attr($labelId); ?>"><?php echo esc_html($texts['label']); ?></span>
-            <?php endif; ?>
-            <div class="ctp-events__finder-strip<?php echo esc_attr($stripClass); ?>">
+            <span class="ctp-events__finder-row-label" id="<?php echo esc_attr($labelId); ?>"><?php echo esc_html($texts['label']); ?></span>
+            <div class="ctp-events__finder-strip">
                 <div class="ctp-events__finder-group" role="group" aria-labelledby="<?php echo esc_attr($labelId); ?>">
                     <button
                         type="button"
@@ -77,7 +66,7 @@ $rowTexts = [
                             data-ctp-group-filter="<?php echo esc_attr($row['key']); ?>"
                             data-ctp-group-value="<?php echo esc_attr($option); ?>"
                             aria-pressed="false"
-                        ><?php echo esc_html($option); ?></button>
+                        ><?php echo esc_html($row['labels'][$option] ?? $option); ?></button>
                     <?php endforeach; ?>
                 </div>
                 <button type="button" class="ctp-events__finder-scroll ctp-events__finder-scroll--prev" aria-label="<?php echo esc_attr($texts['prev']); ?>" hidden>
