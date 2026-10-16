@@ -84,7 +84,12 @@ final class GroupSyncTest extends TestCase
             'currentMemberCount' => 8,
             'requestedSeatsCount' => 0,
         ]);
-        $raw['information']['meetingPlace'] = ['nameTranslated' => 'Gemeindehaus'];
+        $raw['information']['groupPlaces'] = [[
+            'id' => 381,
+            'name' => 'Gemeindehaus',
+            'zip' => '71737',
+            'city' => 'Kirchberg an der Murr',
+        ]];
         $group = GroupSync::normalizeGroup($raw, self::BASE);
 
         $this->assertSame([
@@ -167,24 +172,22 @@ final class GroupSyncTest extends TestCase
         $this->assertSame('', $group['target_group']);
     }
 
-    public function testNormalizeGroupAcceptsMeetingPlaceTextOrTranslatedObject(): void
+    public function testNormalizeGroupReadsChurchToolsGroupPlaces(): void
     {
         $group = $this->group(81, 'Hauskreis');
-        $group['information']['meetingPlace'] = ['nameTranslated' => 'Gemeindehaus', 'name' => 'Meeting house'];
+        $group['information']['groupPlaces'] = [
+            ['name' => 'Gemeindehaus', 'zip' => '71737', 'city' => 'Kirchberg an der Murr'],
+            ['name' => 'CVJM-Heim', 'zip' => '71737', 'city' => 'Kirchberg an der Murr'],
+            ['name' => 'Gemeindehaus', 'zip' => '71737', 'city' => 'Kirchberg an der Murr'],
+        ];
         $this->assertSame(
-            'Gemeindehaus',
+            'Gemeindehaus, CVJM-Heim',
             GroupSync::normalizeGroup($group, self::BASE)['location']
         );
 
-        $group['information']['meetingPlace'] = 'Kirchsaal';
+        $group['information']['groupPlaces'] = [['zip' => '72218', 'city' => 'Wildberg']];
         $this->assertSame(
-            'Kirchsaal',
-            GroupSync::normalizeGroup($group, self::BASE)['location']
-        );
-
-        $group['information'] = ['meetingLocation' => 'Gemeindezentrum'];
-        $this->assertSame(
-            'Gemeindezentrum',
+            '72218 Wildberg',
             GroupSync::normalizeGroup($group, self::BASE)['location']
         );
     }

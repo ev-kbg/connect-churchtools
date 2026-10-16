@@ -304,10 +304,15 @@ final class GroupSync
         $information = is_array($group['information'] ?? null) ? $group['information'] : [];
         $maxMembers = (int) ($group['maxMemberCount'] ?? 0);
         $taken = (int) ($group['currentMemberCount'] ?? 0) + (int) ($group['requestedSeatsCount'] ?? 0);
-        $location = '';
+        $location = self::locationLabel($information['groupPlaces'] ?? null);
 
         foreach (['meetingPlace', 'meetingLocation', 'location', 'place'] as $locationField) {
+            if ($location !== '') {
+                break;
+            }
+
             $location = self::locationLabel($information[$locationField] ?? null);
+
             if ($location !== '') {
                 break;
             }
@@ -353,20 +358,34 @@ final class GroupSync
     }
 
     /**
-     * ChurchTools liefert den Treffpunkt je nach API-Version als Text oder
-     * als Stammdatenobjekt. Fuer die Website wird nur dessen oeffentliche
-     * Beschriftung gespeichert, keine internen IDs oder weiteren Angaben.
+     * `groupPlaces` ist eine Liste oeffentlicher Ortsangaben mit Name und
+     * Anschrift. Fuer die Kachel genuegt der Name; bei mehreren Orten bleiben
+     * die Namen in ChurchTools-Reihenfolge erhalten. Einzelne abweichende API-
+     * Formen werden ebenfalls als Text oder Objektbeschriftung gelesen.
      *
      * @param mixed $place
      */
     private static function locationLabel($place): string
     {
         if (is_string($place)) {
-            return trim((string) $place);
+            return trim($place);
         }
 
         if (!is_array($place)) {
             return '';
+        }
+
+        if (array_is_list($place)) {
+            $labels = [];
+
+            foreach ($place as $entry) {
+                $label = self::locationLabel($entry);
+                if ($label !== '' && !in_array($label, $labels, true)) {
+                    $labels[] = $label;
+                }
+            }
+
+            return implode(', ', $labels);
         }
 
         foreach (['nameTranslated', 'name', 'label', 'title'] as $key) {
@@ -375,7 +394,10 @@ final class GroupSync
             }
         }
 
-        return '';
+        return trim(implode(' ', array_filter([
+            is_string($place['zip'] ?? null) ? trim($place['zip']) : '',
+            is_string($place['city'] ?? null) ? trim($place['city']) : '',
+        ])));
     }
 
     /** Der sortKey eines Stammdaten-Objekts, oder null, wenn es keins gibt. */

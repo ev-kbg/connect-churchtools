@@ -5,6 +5,12 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.38.0-kbg.4] - 2026-10-16
+
+### Fixed
+
+- **Gruppenort aus information.groupPlaces übernehmen.** Die ChurchTools-API liefert Treffpunkte als Liste mit Ortsnamen, nicht als meetingPlace/location-Feld. Dadurch blieb die Ortszeile in 1.38.0-kbg.3 leer. Mehrere Ortsnamen werden ohne Duplikate angezeigt.
+
 ## [1.38.0-kbg.3] - 2026-10-16
 
 ### Added
