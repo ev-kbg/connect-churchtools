@@ -75,11 +75,25 @@ final class GroupListRendererTest extends TestCase
 
     public function testHiddenElementsOfTheDesignTabApply(): void
     {
-        $group = GroupListRenderer::prepareGroups([$this->group(44, '')], [], ['time', 'excerpt', 'calendar'])[0];
+        $group = GroupListRenderer::prepareGroups([$this->group(44, '')], [], ['time', 'excerpt', 'calendar', 'location'])[0];
 
         $this->assertSame('', $group['schedule']);
         $this->assertSame('', $group['excerpt']);
         $this->assertSame('', $group['target_group_label']);
+        $this->assertSame('', $group['location_label']);
+    }
+
+    public function testGroupLocationIsRenderedInGridFeaturedAndPopup(): void
+    {
+        $this->homepageWith([array_merge($this->group(269, ''), ['location' => 'Gemeindehaus Kirchberg'])]);
+        $html = (new GroupListRenderer())->render(['homepage' => 'Kleingruppen']);
+
+        $this->assertSame(2, substr_count($html, 'Gemeindehaus Kirchberg'), 'Ort auf der Kachel und im Popup.');
+        $this->assertSame(2, substr_count($html, 'ctp-events__meta-item--location'));
+
+        $featured = (new GroupListRenderer())->render(['groups' => '269', 'layout' => 'featured']);
+        $this->assertStringContainsString('Gemeindehaus Kirchberg', $featured);
+        $this->assertStringContainsString('ctp-events__meta-item--location', $featured);
     }
 
     /**
@@ -372,6 +386,7 @@ final class GroupListRendererTest extends TestCase
             'image_url' => $imageUrl,
             'weekday' => 'Donnerstag',
             'meeting_time' => '19:30 Uhr',
+            'location' => 'Gemeindehaus',
             'target_group' => 'Jeder',
             'max_members' => null,
             'free_places' => null,

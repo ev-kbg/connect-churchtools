@@ -304,6 +304,14 @@ final class GroupSync
         $information = is_array($group['information'] ?? null) ? $group['information'] : [];
         $maxMembers = (int) ($group['maxMemberCount'] ?? 0);
         $taken = (int) ($group['currentMemberCount'] ?? 0) + (int) ($group['requestedSeatsCount'] ?? 0);
+        $location = '';
+
+        foreach (['meetingPlace', 'meetingLocation', 'location', 'place'] as $locationField) {
+            $location = self::locationLabel($information[$locationField] ?? null);
+            if ($location !== '') {
+                break;
+            }
+        }
 
         return [
             'id' => $id,
@@ -317,6 +325,7 @@ final class GroupSync
             // Knoepfe des Gruppenfinders stehen damit Montag bis Sonntag.
             'weekday_sort' => self::sortKey($information['weekday'] ?? null),
             'meeting_time' => trim((string) ($information['meetingTime'] ?? '')),
+            'location' => $location,
             // „Jeder" ist eine gewaehlte Zielgruppe wie jede andere, keine
             // Vorgabe: An der Referenzinstanz tragen 7 von 17 Gruppen gar
             // keine (`null`, gelesen 2026-09-15). Die Zeile bleibt dann leer,
@@ -341,6 +350,32 @@ final class GroupSync
             'waitinglist' => !empty($group['allowWaitinglist']),
             'url' => trailingslashit($baseUrl) . 'publicgroup/' . $id,
         ];
+    }
+
+    /**
+     * ChurchTools liefert den Treffpunkt je nach API-Version als Text oder
+     * als Stammdatenobjekt. Fuer die Website wird nur dessen oeffentliche
+     * Beschriftung gespeichert, keine internen IDs oder weiteren Angaben.
+     *
+     * @param mixed $place
+     */
+    private static function locationLabel($place): string
+    {
+        if (is_string($place)) {
+            return trim((string) $place);
+        }
+
+        if (!is_array($place)) {
+            return '';
+        }
+
+        foreach (['nameTranslated', 'name', 'label', 'title'] as $key) {
+            if (is_string($place[$key] ?? null) && trim($place[$key]) !== '') {
+                return trim($place[$key]);
+            }
+        }
+
+        return '';
     }
 
     /** Der sortKey eines Stammdaten-Objekts, oder null, wenn es keins gibt. */

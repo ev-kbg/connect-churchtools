@@ -97,6 +97,13 @@ if (!defined('ABSPATH')) {
                                     <?php echo esc_html($group['target_group_label']); ?>
                                 </span>
                             <?php endif; ?>
+                            <?php if ($group['location_label'] !== '') : ?>
+                                <span class="ctp-events__meta-item ctp-events__meta-item--location">
+                                    <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Icons:: returns fixed, hard-coded SVG markup with no request input (see Icons.php docblock). ?>
+                                    <?php echo Icons::location(); ?>
+                                    <?php echo esc_html($group['location_label']); ?>
+                                </span>
+                            <?php endif; ?>
                             <?php if ($group['excerpt_html'] !== '') : ?>
                                 <div class="ctp-events__excerpt ctp-groups__excerpt">
                                     <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- GroupListRenderer::excerptHtml() runs the note through EventFormatter::descriptionHtml() (wp_kses() with its own allowlist) or esc_html(). ?>

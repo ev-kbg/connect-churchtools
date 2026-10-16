@@ -64,6 +64,13 @@ $titleId = $titleId . '-detail';
             <?php echo esc_html($group['target_group_label']); ?>
         </p>
     <?php endif; ?>
+    <?php if ($group['location_label'] !== '') : ?>
+        <p class="ctp-events__meta-item ctp-events__meta-item--location">
+            <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Icons:: returns fixed, hard-coded SVG markup with no request input (see Icons.php docblock). ?>
+            <?php echo Icons::location(); ?>
+            <?php echo esc_html($group['location_label']); ?>
+        </p>
+    <?php endif; ?>
     <?php if ($group['description_html'] !== '') : ?>
         <div class="ctp-events__detail-description">
             <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- EventFormatter::descriptionHtml() runs the raw value through wp_kses() with its own allowlist before adding any markup of its own (see its docblock). ?>

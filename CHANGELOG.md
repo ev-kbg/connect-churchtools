@@ -5,6 +5,12 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.38.0-kbg.3] - 2026-10-16
+
+### Added
+
+- **Treffpunkt bei Gruppen anzeigen.** Gruppen-Homepages übernehmen den Ort aus ChurchTools; er erscheint mit Standortsymbol in Raster, hervorgehobener Ansicht und Popup. Die bestehende Design-Option „Ort“ blendet ihn bei Bedarf aus.
+
 ## [1.38.0-kbg.2] - 2026-10-16
 
 ### Added

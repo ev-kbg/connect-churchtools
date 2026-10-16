@@ -2,7 +2,7 @@
 
 Zurück zur [Übersicht](../README.md).
 
-Als Ersatz für den iframe einer Gruppen-Homepage: dieselben Gruppen, aber in der Optik des Plugins – mit Zielgruppe, Treffzeit, Auszug und, wo die Gruppe eine Höchstzahl hat, den freien Plätzen. Der Button „In ChurchTools ansehen“ führt zur Gruppe in ChurchTools, wo man sich anmeldet. Unter *Gruppen → Einbinden → Darstellung der Gruppen* lässt sich dieser Button global für Raster, hervorgehobene Ansicht und Popup ausblenden.
+Als Ersatz für den iframe einer Gruppen-Homepage: dieselben Gruppen, aber in der Optik des Plugins – mit Treffzeit, Ort, Zielgruppe, Auszug und, wo die Gruppe eine Höchstzahl hat, den freien Plätzen. Der Button „In ChurchTools ansehen“ führt zur Gruppe in ChurchTools, wo man sich anmeldet. Unter *Gruppen → Einbinden → Darstellung der Gruppen* lässt sich dieser Button global für Raster, hervorgehobene Ansicht und Popup ausblenden.
 
 Auf Wunsch mit **Gruppenfinder**: Knöpfe für Kategorie, Wochentag und Zielgruppe plus Suche, wie der Eventfinder bei den Terminen.
 
@@ -37,6 +37,7 @@ Mehrere Knöpfe greifen zusammen: Musik und Sonntag zeigt die Musikgruppen am So
 | --- | --- |
 | Kategorie | die Themenknöpfe – die Kategorien selbst legt ein Administrator in den Stammdaten an |
 | Wochentag und Treffzeit | Knopf „Wochentag“, Zeile auf der Kachel |
+| Treffpunkt | Ortszeile auf der Kachel und im Popup |
 | Zielgruppe | Knopf „Für wen“ – „Jeder“ nur, wenn die Gruppe wirklich allen offen steht |
 | Bild und Beschreibung | Kachel, Popup und Suche |
 | Höchstzahl (freiwillig) | freie Plätze auf der Kachel |
@@ -61,8 +62,8 @@ Unter *Gruppen → Homepages* steht neben jeder Homepage der passende Shortcode 
 
 ## Gut zu wissen
 
-- **ChurchTools entscheidet, was erscheint.** Es erscheinen die Gruppen, die die Homepage in ChurchTools öffentlich zeigt, Bilder nur, wo sie Gruppenbilder zeigt. Übernommen werden Name, Beschreibung, Kategorie, Treffzeit, Zielgruppe, Plätze und Bild – keine Leiter und nichts über Personen, auch wenn ChurchTools dem API-Key mehr mitschickt.
+- **ChurchTools entscheidet, was erscheint.** Es erscheinen die Gruppen, die die Homepage in ChurchTools öffentlich zeigt, Bilder nur, wo sie Gruppenbilder zeigt. Übernommen werden Name, Beschreibung, Kategorie, Treffzeit, Treffpunkt, Zielgruppe, Plätze und Bild – keine Leiter und nichts über Personen, auch wenn ChurchTools dem API-Key mehr mitschickt.
 - **Die freien Plätze sind so alt wie der letzte Abgleich.** Die Anmeldung in ChurchTools zeigt immer den echten Stand. Wer es genauer braucht, stellt das *Sync-Intervall* kürzer.
-- **Aussehen wie die Termine:** Vorlage, Farben, Ecken, Bildformat und Reihenfolge aus *Einstellungen → Design* gelten auch hier. Hat eine Gruppe kein Bild, steht dort eine Farbfläche. Die Zielgruppe steht mit Personensymbol unter der Treffzeit; wer unter *Kachel* den Kalendernamen ausblendet, blendet auch sie aus.
+- **Aussehen wie die Termine:** Vorlage, Farben, Ecken, Bildformat und Reihenfolge aus *Einstellungen → Design* gelten auch hier. Hat eine Gruppe kein Bild, steht dort eine Farbfläche. Treffpunkt und Zielgruppe stehen mit ihren Symbolen unter der Treffzeit; die Ortszeile lässt sich dort mit „Ort“ ausblenden, die Zielgruppe mit dem Kalendernamen.
 - **Ganzer Text im Popup:** Ein Klick auf eine Kachel – im Raster wie in der hervorgehobenen Ansicht, dort wie bei der Hero-Kachel der Termine – öffnet die Gruppe in einem Popup auf der eigenen Website: großes Bild im selben Seitenverhältnis wie auf der Kachel, Treffzeit, Zielgruppe, der ganze Text und, sofern aktiviert, der Button nach ChurchTools. Ist der Button ausgeblendet, bleibt die Gruppe im Popup; ohne JavaScript führt der Titel-Link weiterhin nach ChurchTools.
 - **Keine eigene Gruppenseite:** Den vollen Text zeigt das Popup, die Anmeldung liegt in ChurchTools.

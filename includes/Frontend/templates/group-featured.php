@@ -76,6 +76,13 @@ if (!defined('ABSPATH')) {
                                 <?php echo esc_html($group['target_group_label']); ?>
                             </span>
                         <?php endif; ?>
+                        <?php if ($group['location_label'] !== '') : ?>
+                            <span class="ctp-events__meta-item ctp-events__meta-item--location">
+                                <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Icons:: returns fixed, hard-coded SVG markup with no request input (see Icons.php docblock). ?>
+                                <?php echo Icons::location(); ?>
+                                <?php echo esc_html($group['location_label']); ?>
+                            </span>
+                        <?php endif; ?>
                         <?php if ($group['feature_excerpt_html'] !== '') : ?>
                             <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- GroupListRenderer::featureExcerptHtml() runs the note through EventFormatter::descriptionHtml() (wp_kses() with its own allowlist, obfuscated mail addresses). ?>
                             <p class="ctp-events__excerpt"><?php echo $group['feature_excerpt_html']; ?></p>

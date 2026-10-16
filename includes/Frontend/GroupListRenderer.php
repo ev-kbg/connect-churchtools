@@ -302,6 +302,9 @@ final class GroupListRenderer
             $group['target_group_label'] = in_array('calendar', $hiddenElements, true)
                 ? ''
                 : trim((string) ($group['target_group'] ?? ''));
+            $group['location_label'] = in_array('location', $hiddenElements, true)
+                ? ''
+                : trim((string) ($group['location'] ?? ''));
             $group['places_label'] = self::placesLabel($group);
             $group['excerpt'] = in_array('excerpt', $hiddenElements, true) || (string) ($group['note'] ?? '') === ''
                 ? ''

@@ -79,11 +79,13 @@ final class GroupSyncTest extends TestCase
 
     public function testNormalizeGroupTakesTheFieldsOfARealGroup(): void
     {
-        $group = GroupSync::normalizeGroup($this->group(44, 'Seniorenarbeit', [
+        $raw = $this->group(44, 'Seniorenarbeit', [
             'maxMemberCount' => 60,
             'currentMemberCount' => 8,
             'requestedSeatsCount' => 0,
-        ]), self::BASE);
+        ]);
+        $raw['information']['meetingPlace'] = ['nameTranslated' => 'Gemeindehaus'];
+        $group = GroupSync::normalizeGroup($raw, self::BASE);
 
         $this->assertSame([
             'id' => 44,
@@ -93,6 +95,7 @@ final class GroupSyncTest extends TestCase
             'weekday' => 'Mittwoch',
             'weekday_sort' => 2,
             'meeting_time' => '9:30',
+            'location' => 'Gemeindehaus',
             'target_group' => 'Jeder',
             'target_group_key' => 'everyone',
             'target_group_sort' => 1,
@@ -159,8 +162,31 @@ final class GroupSyncTest extends TestCase
         $this->assertSame('', $group['image_url']);
         $this->assertSame('', $group['weekday']);
         $this->assertSame('', $group['meeting_time']);
+        $this->assertSame('', $group['location']);
         $this->assertSame('', $group['note']);
         $this->assertSame('', $group['target_group']);
+    }
+
+    public function testNormalizeGroupAcceptsMeetingPlaceTextOrTranslatedObject(): void
+    {
+        $group = $this->group(81, 'Hauskreis');
+        $group['information']['meetingPlace'] = ['nameTranslated' => 'Gemeindehaus', 'name' => 'Meeting house'];
+        $this->assertSame(
+            'Gemeindehaus',
+            GroupSync::normalizeGroup($group, self::BASE)['location']
+        );
+
+        $group['information']['meetingPlace'] = 'Kirchsaal';
+        $this->assertSame(
+            'Kirchsaal',
+            GroupSync::normalizeGroup($group, self::BASE)['location']
+        );
+
+        $group['information'] = ['meetingLocation' => 'Gemeindezentrum'];
+        $this->assertSame(
+            'Gemeindezentrum',
+            GroupSync::normalizeGroup($group, self::BASE)['location']
+        );
     }
 
     /**
@@ -182,7 +208,7 @@ final class GroupSyncTest extends TestCase
         $group = GroupSync::normalizeGroup($raw, self::BASE);
 
         $this->assertSame(
-            ['id', 'name', 'note', 'image_url', 'weekday', 'weekday_sort', 'meeting_time', 'target_group', 'target_group_key', 'target_group_sort', 'category', 'category_sort', 'max_members', 'free_places', 'waitinglist', 'url'],
+            ['id', 'name', 'note', 'image_url', 'weekday', 'weekday_sort', 'meeting_time', 'location', 'target_group', 'target_group_key', 'target_group_sort', 'category', 'category_sort', 'max_members', 'free_places', 'waitinglist', 'url'],
             array_keys($group)
         );
         $this->assertStringNotContainsString('Erika', (string) wp_json_encode($group));
