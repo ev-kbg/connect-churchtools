@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 ?>
-<?php if ((string) ($group['url'] ?? '') !== '') : ?>
+<?php if (!empty($args['show_cta']) && (string) ($group['url'] ?? '') !== '') : ?>
     <p class="ctp-events__cta-row">
         <a class="ctp-events__cta ctp-button" href="<?php echo esc_url($group['url']); ?>" aria-describedby="<?php echo esc_attr($titleId); ?>">
             <?php echo esc_html(GroupListRenderer::ctaLabel()); ?>

@@ -107,6 +107,7 @@ final class GroupListRenderer
         $args['columns'] = min(self::MAX_COLUMNS, max(self::MIN_COLUMNS, (int) $args['columns']));
         $args['layout'] = in_array($args['layout'], self::LAYOUTS, true) ? $args['layout'] : 'grid';
         $args['instance'] = wp_unique_id('ctp-groups-');
+        $args['show_cta'] = GroupSettings::showCta();
         $args = array_merge($args, EventListRenderer::designArgs(Settings::get()));
 
         $selected = self::selectGroups((string) $args['homepage'], (string) $args['groups']);

@@ -48,6 +48,7 @@ final class GroupSettings
              */
             'homepages' => [],
             'sync_interval' => self::DEFAULT_INTERVAL,
+            'show_cta' => true,
         ];
     }
 
@@ -81,7 +82,11 @@ final class GroupSettings
             $settings['sync_interval'] = self::DEFAULT_INTERVAL;
         }
 
-        return $settings;
+        return [
+            'homepages' => $homepages,
+            'sync_interval' => $settings['sync_interval'],
+            'show_cta' => !empty($settings['show_cta']),
+        ];
     }
 
     /**
@@ -120,7 +125,17 @@ final class GroupSettings
         return [
             'homepages' => $homepages,
             'sync_interval' => $interval,
+            'show_cta' => array_key_exists('show_cta', $input)
+                ? !empty($input['show_cta'])
+                : $existing['show_cta'],
         ];
+    }
+
+    public static function showCta(?array $settings = null): bool
+    {
+        $settings ??= self::get();
+
+        return !empty($settings['show_cta']);
     }
 
     /**

@@ -122,6 +122,23 @@ final class GroupListRendererTest extends TestCase
         $this->assertStringNotContainsString('ctp-events__media', $html);
     }
 
+    public function testTheGroupCtaCanBeHiddenFromGridAndFeaturedCardsAndDetails(): void
+    {
+        $this->homepageWith([$this->group(269, '')]);
+        ctp_test_set_option(GroupSettings::OPTION_KEY, [
+            'homepages' => [9 => ['name' => 'Kleingruppen', 'hash' => 'AbC123', 'enabled' => true]],
+            'show_cta' => false,
+        ]);
+
+        foreach (['grid', 'featured'] as $layout) {
+            $html = (new GroupListRenderer())->render(['homepage' => 'Kleingruppen', 'layout' => $layout]);
+
+            $this->assertStringNotContainsString('class="ctp-events__cta ctp-button"', $html, $layout . ' CTA');
+            $this->assertStringNotContainsString('In ChurchTools ansehen', $html, $layout . ' CTA label');
+            $this->assertStringContainsString('publicgroup/269', $html, $layout . ' group popup remains available');
+        }
+    }
+
     /**
      * Nutzerwunsch 2026-09-15: laengerer Auszug in der Rasterkachel, mit den
      * Absaetzen und Zeilen aus ChurchTools statt einer zusammengezogenen Zeile.

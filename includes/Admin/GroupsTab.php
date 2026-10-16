@@ -547,6 +547,7 @@ final class GroupsTab
      */
     public static function renderEmbed(): void
     {
+        $settings = GroupSettings::get();
         $enabled = GroupSettings::enabledHomepages();
         $examples = [];
         $firstRef = null;
@@ -586,13 +587,36 @@ final class GroupsTab
             ];
         }
         ?>
+        <form method="post" action="options.php" class="ctp-settings-form">
+            <div class="ctp-panel">
+                <?php settings_fields(GroupSettings::OPTION_GROUP); ?>
+                <h2><?php esc_html_e('Darstellung der Gruppen', 'churchtools-plugin'); ?></h2>
+                <p class="description">
+                    <?php esc_html_e('Die Einstellung gilt für alle Gruppenlisten, egal ob sie per Shortcode, Block oder WPBakery eingebunden sind.', 'churchtools-plugin'); ?>
+                </p>
+                <p>
+                    <input type="hidden" name="<?php echo esc_attr(GroupSettings::OPTION_KEY); ?>[show_cta]" value="0">
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="<?php echo esc_attr(GroupSettings::OPTION_KEY); ?>[show_cta]"
+                            value="1"
+                            <?php checked($settings['show_cta']); ?>
+                        >
+                        <?php esc_html_e('Button „In ChurchTools ansehen“ anzeigen', 'churchtools-plugin'); ?>
+                    </label>
+                </p>
+            </div>
+            <?php SettingsPage::renderSaveBar(); ?>
+        </form>
+
         <div class="ctp-panel">
             <h2><?php esc_html_e('Drei Wege, dieselbe Darstellung', 'churchtools-plugin'); ?></h2>
             <p class="description">
                 <?php esc_html_e('Gruppen lassen sich per Shortcode, über den Gutenberg-Block „ChurchTools Gruppen“ oder über das WPBakery-Element „ChurchTools Gruppen“ einbinden. Alle drei zeigen dieselben Kacheln; Vorlage, Farben und Ecken kommen aus „Einstellungen → Design“.', 'churchtools-plugin'); ?>
             </p>
             <p class="description">
-                <?php esc_html_e('Block und WPBakery-Element bieten die aktiven Homepages und ihre Gruppen als Auswahl an. Unter jeder Gruppe steht der Button „In ChurchTools ansehen“; er führt zur Gruppe in ChurchTools, wo man sich anmeldet. Die Kachel selbst ist nicht klickbar.', 'churchtools-plugin'); ?>
+                <?php esc_html_e('Block und WPBakery-Element bieten die aktiven Homepages und ihre Gruppen als Auswahl an. Der Button unter einer Gruppe führt zu ChurchTools, wo man sich anmeldet. Ein Klick auf die Kachel öffnet das Popup; den Button kannst du oben ausblenden.', 'churchtools-plugin'); ?>
             </p>
             <p class="description">
                 <?php esc_html_e('Einzeln wählbar sind die Gruppen der aktiven Homepages – eine Gruppe, die auf keiner steht, entscheidet ChurchTools nicht als öffentlich und erscheint deshalb auch hier nicht.', 'churchtools-plugin'); ?>

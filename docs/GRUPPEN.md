@@ -2,7 +2,7 @@
 
 Zurück zur [Übersicht](../README.md).
 
-Als Ersatz für den iframe einer Gruppen-Homepage: dieselben Gruppen, aber in der Optik des Plugins – mit Zielgruppe, Treffzeit, Auszug und, wo die Gruppe eine Höchstzahl hat, den freien Plätzen. Der Button „In ChurchTools ansehen“ führt zur Gruppe in ChurchTools, wo man sich anmeldet.
+Als Ersatz für den iframe einer Gruppen-Homepage: dieselben Gruppen, aber in der Optik des Plugins – mit Zielgruppe, Treffzeit, Auszug und, wo die Gruppe eine Höchstzahl hat, den freien Plätzen. Der Button „In ChurchTools ansehen“ führt zur Gruppe in ChurchTools, wo man sich anmeldet. Unter *Gruppen → Einbinden → Darstellung der Gruppen* lässt sich dieser Button global für Raster, hervorgehobene Ansicht und Popup ausblenden.
 
 Auf Wunsch mit **Gruppenfinder**: Knöpfe für Kategorie, Wochentag und Zielgruppe plus Suche, wie der Eventfinder bei den Terminen.
 
@@ -64,5 +64,5 @@ Unter *Gruppen → Homepages* steht neben jeder Homepage der passende Shortcode 
 - **ChurchTools entscheidet, was erscheint.** Es erscheinen die Gruppen, die die Homepage in ChurchTools öffentlich zeigt, Bilder nur, wo sie Gruppenbilder zeigt. Übernommen werden Name, Beschreibung, Kategorie, Treffzeit, Zielgruppe, Plätze und Bild – keine Leiter und nichts über Personen, auch wenn ChurchTools dem API-Key mehr mitschickt.
 - **Die freien Plätze sind so alt wie der letzte Abgleich.** Die Anmeldung in ChurchTools zeigt immer den echten Stand. Wer es genauer braucht, stellt das *Sync-Intervall* kürzer.
 - **Aussehen wie die Termine:** Vorlage, Farben, Ecken, Bildformat und Reihenfolge aus *Einstellungen → Design* gelten auch hier. Hat eine Gruppe kein Bild, steht dort eine Farbfläche. Die Zielgruppe steht mit Personensymbol unter der Treffzeit; wer unter *Kachel* den Kalendernamen ausblendet, blendet auch sie aus.
-- **Ganzer Text im Popup:** Ein Klick auf eine Kachel – im Raster wie in der hervorgehobenen Ansicht, dort wie bei der Hero-Kachel der Termine – öffnet die Gruppe in einem Popup auf der eigenen Website: großes Bild im selben Seitenverhältnis wie auf der Kachel, Treffzeit, Zielgruppe, der ganze Text und der Button nach ChurchTools. Nach ChurchTools geht es nur über den Button.
+- **Ganzer Text im Popup:** Ein Klick auf eine Kachel – im Raster wie in der hervorgehobenen Ansicht, dort wie bei der Hero-Kachel der Termine – öffnet die Gruppe in einem Popup auf der eigenen Website: großes Bild im selben Seitenverhältnis wie auf der Kachel, Treffzeit, Zielgruppe, der ganze Text und, sofern aktiviert, der Button nach ChurchTools. Ist der Button ausgeblendet, bleibt die Gruppe im Popup; ohne JavaScript führt der Titel-Link weiterhin nach ChurchTools.
 - **Keine eigene Gruppenseite:** Den vollen Text zeigt das Popup, die Anmeldung liegt in ChurchTools.

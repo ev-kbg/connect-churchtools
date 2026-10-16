@@ -43,9 +43,32 @@ final class GroupSettingsTest extends TestCase
     public function testSanitizeKeepsWhatWasNotSubmitted(): void
     {
         $this->assertSame(
-            ['homepages' => self::HOMEPAGES, 'sync_interval' => 'daily'],
+            ['homepages' => self::HOMEPAGES, 'sync_interval' => 'daily', 'show_cta' => true],
             GroupSettings::sanitize(null)
         );
+    }
+
+    public function testCtaIsShownByDefaultAndCanBeDisabled(): void
+    {
+        $this->assertTrue(GroupSettings::showCta());
+
+        $saved = GroupSettings::sanitize(['show_cta' => '0']);
+        $this->assertFalse($saved['show_cta']);
+
+        ctp_test_set_option(GroupSettings::OPTION_KEY, $saved);
+        $this->assertFalse(GroupSettings::showCta());
+    }
+
+    public function testSavingOtherGroupSettingsPreservesCtaSetting(): void
+    {
+        ctp_test_set_option(GroupSettings::OPTION_KEY, [
+            'homepages' => self::HOMEPAGES,
+            'sync_interval' => 'daily',
+            'show_cta' => false,
+        ]);
+
+        $this->assertFalse(GroupSettings::sanitize(['sync_interval' => 'weekly'])['show_cta']);
+        $this->assertFalse(GroupSettings::sanitize(['homepages' => [6 => ['enabled' => '1']]])['show_cta']);
     }
 
     /**
