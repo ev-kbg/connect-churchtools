@@ -106,4 +106,26 @@ final class EventFormatterTest extends TestCase
         $this->assertFalse(EventFormatter::containsHtml('Kinder < 12 Jahre, Eltern > 30'));
         $this->assertFalse(EventFormatter::containsHtml("Zeile\nZeile"));
     }
+
+    public function testDescriptionRendersMarkdownLinksAndEscapedLineBreaks(): void
+    {
+        $description = "Weitere Infos findest Du hier:\\\n[Gemeindefreizeit 2027](https://ev-kirche-kirchberg.de/gemeindefreizeit-2027/)";
+        $html = EventFormatter::descriptionHtml($description);
+
+        $this->assertStringContainsString('Weitere Infos findest Du hier:<br />', $html);
+        $this->assertStringContainsString(
+            '<a href="https://ev-kirche-kirchberg.de/gemeindefreizeit-2027/">Gemeindefreizeit 2027</a>',
+            $html
+        );
+        $this->assertStringNotContainsString('[Gemeindefreizeit 2027](', $html);
+        $this->assertStringNotContainsString("here:\\", $html);
+    }
+
+    public function testDescriptionEscapesMarkdownLinkLabelsAndIgnoresNonHttpSchemes(): void
+    {
+        $html = EventFormatter::descriptionHtml('[Information & Anmeldung](https://example.org/) [unsafe](javascript:alert(1))');
+
+        $this->assertStringContainsString('<a href="https://example.org/">Information &amp; Anmeldung</a>', $html);
+        $this->assertStringNotContainsString('href="javascript:', $html);
+    }
 }

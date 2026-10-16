@@ -262,6 +262,10 @@ final class EventFormatter
      *     Inline-Styles mit beliebiger Quelle durch - Besucher haetten dann
      *     Dateien von fremden Servern geladen, und das Plugin verspricht, dass
      *     sie das nicht tun (Bilder werden deshalb importiert).
+     *   - Markdown links of the form `[label](https://…)` are converted to
+     *     links after sanitizing existing HTML; labels and URLs are escaped
+     *     separately. A backslash immediately before a newline is removed so
+     *     WordPress can render the line break normally.
      *   - make_clickable() turns bare URLs and mail addresses into links —
      *     ChurchTools descriptions carry registration links as plain text, and
      *     they were previously unreachable.
@@ -274,12 +278,27 @@ final class EventFormatter
      */
     public static function descriptionHtml(string $description): string
     {
-        $html = wpautop(make_clickable(wp_kses($description, self::DESCRIPTION_TAGS)));
+        $description = (string) preg_replace('/\\\\(?=\r?\n)/', '', $description);
+        $description = self::convertMarkdownLinks(wp_kses($description, self::DESCRIPTION_TAGS));
+        $html = wpautop(make_clickable($description));
 
         // maskEmails() danach fuer alles, was make_clickable() nicht zum Link
         // gemacht hat - etwa eine Adresse direkt an einem Satzzeichen oder in
         // einem title-Attribut. In schon verschleierten Links steht kein @ mehr.
         return self::maskEmails(self::obfuscateMailLinks($html));
+    }
+
+    /**
+     * Convert simple HTTP(S) Markdown links without interpreting arbitrary
+     * Markdown or allowing markup in a link label.
+     */
+    private static function convertMarkdownLinks(string $text): string
+    {
+        return (string) preg_replace_callback(
+            '~\[([^\]\r\n]+)\]\((https?://[^\s<>()]+)\)~i',
+            static fn (array $match): string => '<a href="' . esc_url($match[2]) . '">' . esc_html($match[1]) . '</a>',
+            $text
+        );
     }
 
     /**
