@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ChurchToolsPlugin\Tests\Frontend;
 
+use ChurchToolsPlugin\Frontend\DetailDesign;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
@@ -181,6 +182,34 @@ final class PopupTemplateTest extends TestCase
         $this->assertStringNotContainsString('max-height', $rumpf[1]);
     }
 
+    public function testEventLinkButtonOpensTheChurchToolsLinkInANewTab(): void
+    {
+        $dom = $this->renderDetail('https://example.test/info?a=1&b=2');
+        $links = $this->query(
+            $dom,
+            "//a[contains(concat(' ', normalize-space(@class), ' '), ' ctp-events__event-link ')]"
+        );
+
+        $this->assertCount(1, $links);
+        $this->assertSame('https://example.test/info?a=1&b=2', $links[0]->getAttribute('href'));
+        $this->assertSame('_blank', $links[0]->getAttribute('target'));
+        $this->assertSame('noopener noreferrer', $links[0]->getAttribute('rel'));
+        $this->assertSame('Weitere Informationen', trim($links[0]->textContent));
+    }
+
+    public function testEventLinkButtonIsOmittedWithoutAUrl(): void
+    {
+        $dom = $this->renderDetail('');
+
+        $this->assertCount(
+            0,
+            $this->query(
+                $dom,
+                "//a[contains(concat(' ', normalize-space(@class), ' '), ' ctp-events__event-link ')]"
+            )
+        );
+    }
+
     public function layoutProvider(): array
     {
         return array_combine(
@@ -311,5 +340,47 @@ final class PopupTemplateTest extends TestCase
         }
 
         return $elements;
+    }
+
+    /**
+     * Renders the shared detail partial with only the data used by its fields.
+     *
+     */
+    private function renderDetail(string $externalUrl): DOMDocument
+    {
+        $event = [
+            'title' => 'Kinderbibelwoche',
+            'subtitle' => '',
+            'location' => '',
+            'description' => '',
+            'start_date' => '2026-09-03 19:30:00',
+            'end_date' => '2026-09-03 21:00:00',
+            'all_day' => 0,
+            'calendar_name' => '',
+            'calendar_color' => '',
+            'image_url' => '',
+            'image_is_fallback' => false,
+            'detail_url' => '',
+            'external_url' => $externalUrl,
+            'series_count' => 1,
+        ];
+        $order = array_values(array_diff(DetailDesign::DEFAULT_ORDER, ['description']));
+        $detailContext = 'popup';
+        $shareEnabled = false;
+        $icsEnabled = false;
+        $subscribeEnabled = false;
+        $liveLabel = '';
+
+        ob_start();
+        require CTP_PLUGIN_DIR . 'includes/Frontend/templates/partials/event-detail-content.php';
+        $html = (string) ob_get_clean();
+
+        $dom = new DOMDocument();
+        $previous = libxml_use_internal_errors(true);
+        $dom->loadHTML('<?xml encoding="UTF-8" ?>' . $html);
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+
+        return $dom;
     }
 }

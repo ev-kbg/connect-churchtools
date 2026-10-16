@@ -103,6 +103,10 @@ Auf der eigenen Terminseite steht er unter der vollen Breite, linksbündig an de
 
 <img src="screenshots/teilen-seite.png" width="600" alt="Eigene Terminseite mit Teilen-, Importieren- und Abonnieren-Button, dazu die Meldung Link kopiert">
 
+### Link aus ChurchTools
+
+Wenn am Termin in ChurchTools im Feld „Link“ eine Adresse hinterlegt ist, erscheint in den Termindetails der Button „Weitere Informationen“. Er öffnet die Adresse in einem neuen Tab.
+
 ### Importieren
 
 Der „Importieren“-Button legt den Termin als Kalenderdatei ab, die Handy, Outlook und Thunderbird direkt öffnen – mit Titel, Zeit, Ort, Beschreibung, Kategorie und Bild, dazu Anschrift und Koordinaten, wo ChurchTools sie kennt.

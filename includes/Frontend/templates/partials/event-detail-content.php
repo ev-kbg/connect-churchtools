@@ -180,4 +180,14 @@ $ctpKeysOutside = static fn (array $group): array => array_values(
     <?php else : ?>
         <?php $ctpRender($ctpOrder); ?>
     <?php endif; ?>
+    <?php if (($event['external_url'] ?? '') !== '') : ?>
+        <a
+            class="ctp-events__event-link ctp-events__share-btn ctp-button ctp-button--quiet"
+            href="<?php echo esc_url($event['external_url']); ?>"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            <?php esc_html_e('Weitere Informationen', 'churchtools-plugin'); ?>
+        </a>
+    <?php endif; ?>
 </div>

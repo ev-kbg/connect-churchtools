@@ -4,7 +4,7 @@ Tags: churchtools, calendar, events, sync
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.38.0-kbg.5
+Stable tag: 1.38.0-kbg.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,7 +17,7 @@ Das Plugin gleicht ausgewählte ChurchTools-Kalender, Gruppen-Homepages und auf 
 * **Termine automatisch übernehmen**: Serien kommen als einzelne Termine an, abgesagte verschwinden wieder. Vergangene Termine räumen sich samt Bildern selbst weg.
 * **Drei Ansichten**: Liste, Raster und „Nächster Termin“. Einbinden per Gutenberg-Block, WPBakery-Element oder Shortcode.
 * **Schnell finden**: Eventfinder mit Themen- und Zeitraum-Knöpfen, Suche und Monatsüberschriften.
-* **Termindetails** als Popup oder als eigene Seite, auf Wunsch zum Teilen, als Kalenderdatei oder als Kalender-Abo.
+* **Termindetails** als Popup oder als eigene Seite, mit einem Button zu einem in ChurchTools hinterlegten Link sowie auf Wunsch zum Teilen, als Kalenderdatei oder als Kalender-Abo.
 * **Gruppen statt iframe**: die Gruppen einer Gruppen-Homepage in derselben Optik, mit Treffzeit und freien Plätzen, auf Wunsch mit Gruppenfinder.
 * **Beiträge als Neuigkeiten**: die Beiträge öffentlicher Gruppen als Kacheln in der Optik der Gruppen, mit ganzem Text und allen Bildern im Popup. Ausgeschaltet, bis man sie einschaltet.
 * **Gut für Suchmaschinen**: eigene Adresse je Termin, strukturierte Daten und Sitemap, verträglich mit Yoast SEO und Rank Math.

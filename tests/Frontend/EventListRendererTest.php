@@ -76,4 +76,28 @@ final class EventListRendererTest extends TestCase
         $this->assertSame('', $events[0]['image_url']);
         $this->assertSame('', $events[0]['image_srcset']);
     }
+
+    public function testResolvesTheChurchToolsLinkOnlyForAbsoluteHttpUrls(): void
+    {
+        $method = new ReflectionMethod(EventListRenderer::class, 'resolveExternalUrl');
+        $valid = $method->invoke(null, [
+            'raw_data' => wp_json_encode([
+                'appointment' => [
+                    'base' => ['link' => ' https://example.test/info?a=1&b=2 '],
+                ],
+            ]),
+        ]);
+        $unsafe = $method->invoke(null, [
+            'raw_data' => wp_json_encode([
+                'appointment' => [
+                    'base' => ['link' => 'javascript:alert(1)'],
+                ],
+            ]),
+        ]);
+        $missing = $method->invoke(null, ['raw_data' => '{"appointment":{"base":{}}}']);
+
+        $this->assertSame('https://example.test/info?a=1&b=2', $valid);
+        $this->assertSame('', $unsafe);
+        $this->assertSame('', $missing);
+    }
 }

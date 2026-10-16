@@ -615,6 +615,7 @@ final class EventListRenderer
             $event['image_srcset_full'] = $image['id'] > 0 ? CardImage::srcsetFor($image['id']) : '';
 
             $event['detail_url'] = EventDetailPage::urlForEvent($event);
+            $event['external_url'] = self::resolveExternalUrl($event);
 
             /*
              * Wie viele künftige Vorkommnisse diese Serie hat — die Zahl, die
@@ -631,6 +632,41 @@ final class EventListRenderer
         unset($event);
 
         return $events;
+    }
+
+    /**
+     * Die beim ChurchTools-Termin hinterlegte Zusatzadresse steckt in der
+     * gespeicherten API-Antwort. Nur absolute HTTP(S)-URLs werden verlinkt.
+     *
+     * @param array<string, mixed> $event
+     */
+    private static function resolveExternalUrl(array $event): string
+    {
+        $rawData = $event['raw_data'] ?? [];
+        if (is_string($rawData)) {
+            $rawData = json_decode($rawData, true);
+        }
+
+        if (!is_array($rawData)) {
+            return '';
+        }
+
+        $url = $rawData['appointment']['base']['link'] ?? '';
+        if (!is_string($url)) {
+            return '';
+        }
+
+        $url = trim($url);
+        $parts = wp_parse_url($url);
+        if (
+            !is_array($parts)
+            || !isset($parts['scheme'], $parts['host'])
+            || !in_array(strtolower((string) $parts['scheme']), ['http', 'https'], true)
+        ) {
+            return '';
+        }
+
+        return esc_url_raw($url);
     }
 
     /**
