@@ -195,6 +195,11 @@ final class PopupTemplateTest extends TestCase
         $this->assertSame('_blank', $links[0]->getAttribute('target'));
         $this->assertSame('noopener noreferrer', $links[0]->getAttribute('rel'));
         $this->assertSame('Weitere Informationen', trim($links[0]->textContent));
+        $this->assertCount(1, $links[0]->getElementsByTagName('svg'));
+        $this->assertSame(
+            'ctp-events__icon',
+            $links[0]->getElementsByTagName('svg')->item(0)->getAttribute('class')
+        );
     }
 
     public function testEventLinkButtonIsOmittedWithoutAUrl(): void

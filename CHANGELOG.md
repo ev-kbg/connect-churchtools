@@ -7,6 +7,10 @@ Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [1.38.0-kbg.7] - 2026-10-17
 
+### Added
+
+- **Link-Symbol im Button „Weitere Informationen“.** Ein externes-Link-Icon macht den Zweck des Buttons auf einen Blick deutlich.
+
 ### Changed
 
 - **Weitere Informationen im Popup.** Der Button steht jetzt zwischen Termindaten und Beschreibung und ist als hervorgehobener Button gestaltet.

@@ -48,6 +48,7 @@
  */
 
 use ChurchToolsPlugin\Frontend\DetailDesign;
+use ChurchToolsPlugin\Frontend\Icons;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -140,6 +141,8 @@ $ctpRender = static function (array $keys) use ($ctpElement, $ctpAktionen, $even
                 target="_blank"
                 rel="noopener noreferrer"
             >
+                <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Icons::external() is fixed SVG markup without request input. ?>
+                <?php echo Icons::external(); ?>
                 <?php esc_html_e('Weitere Informationen', 'churchtools-plugin'); ?>
             </a>
             <?php
