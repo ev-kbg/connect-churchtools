@@ -121,6 +121,25 @@ final class EventFormatterTest extends TestCase
         $this->assertStringNotContainsString("here:\\", $html);
     }
 
+    public function testDescriptionRendersMarkdownBoldAsStrongText(): void
+    {
+        $html = EventFormatter::descriptionHtml('**Kinderbibelwoche 2026 – 29.10.-01.11.2026**');
+
+        $this->assertStringContainsString(
+            '<strong>Kinderbibelwoche 2026 – 29.10.-01.11.2026</strong>',
+            $html
+        );
+        $this->assertStringNotContainsString('**Kinderbibelwoche', $html);
+    }
+
+    public function testDescriptionOnlyConvertsMarkdownInTextNotHtmlAttributes(): void
+    {
+        $html = EventFormatter::descriptionHtml('<a title="**kein Markdown**">**Fetter Text**</a>');
+
+        $this->assertStringContainsString('title="**kein Markdown**"', $html);
+        $this->assertStringContainsString('<a title="**kein Markdown**"><strong>Fetter Text</strong></a>', $html);
+    }
+
     public function testDescriptionEscapesMarkdownLinkLabelsAndIgnoresNonHttpSchemes(): void
     {
         $html = EventFormatter::descriptionHtml('[Information & Anmeldung](https://example.org/) [unsafe](javascript:alert(1))');

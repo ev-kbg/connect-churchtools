@@ -107,6 +107,8 @@ Auf der eigenen Terminseite steht er unter der vollen Breite, linksbündig an de
 
 Wenn am Termin in ChurchTools im Feld „Link“ eine Adresse hinterlegt ist, erscheint in den Termindetails der Button „Weitere Informationen“. Er öffnet die Adresse in einem neuen Tab.
 
+Die Beschreibung übernimmt einfache Markdown-Auszeichnungen wie **fett** (`**Text**`) sowie Markdown-Links.
+
 ### Importieren
 
 Der „Importieren“-Button legt den Termin als Kalenderdatei ab, die Handy, Outlook und Thunderbird direkt öffnen – mit Titel, Zeit, Ort, Beschreibung, Kategorie und Bild, dazu Anschrift und Koordinaten, wo ChurchTools sie kennt.

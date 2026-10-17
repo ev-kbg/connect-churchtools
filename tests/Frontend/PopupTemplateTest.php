@@ -210,6 +210,36 @@ final class PopupTemplateTest extends TestCase
         );
     }
 
+    public function testEventLinkButtonSitsBetweenMetadataAndDescription(): void
+    {
+        $dom = $this->renderDetail('https://example.test/info');
+        $link = $this->query(
+            $dom,
+            "//a[contains(concat(' ', normalize-space(@class), ' '), ' ctp-events__event-link ')]"
+        )[0] ?? null;
+        $location = $this->query(
+            $dom,
+            "//p[contains(concat(' ', normalize-space(@class), ' '), ' ctp-events__meta-item--location ')]"
+        )[0] ?? null;
+        $description = $this->query(
+            $dom,
+            "//div[contains(concat(' ', normalize-space(@class), ' '), ' ctp-events__detail-description ')]"
+        )[0] ?? null;
+
+        $this->assertInstanceOf(DOMElement::class, $link);
+        $this->assertInstanceOf(DOMElement::class, $location);
+        $this->assertInstanceOf(DOMElement::class, $description);
+        $this->assertSame($location, $link->previousElementSibling);
+        $this->assertSame($description, $link->nextElementSibling);
+        $this->assertStringNotContainsString('ctp-button--quiet', $link->getAttribute('class'));
+
+        $css = (string) file_get_contents(CTP_PLUGIN_DIR . 'assets/css/frontend.css');
+        $this->assertMatchesRegularExpression(
+            '/\.ctp-events \.ctp-events__event-link \{[^}]*padding: 0\.55rem 1rem;[^}]*font-size: var\(--ctp-font-sm\);/s',
+            $css
+        );
+    }
+
     public function layoutProvider(): array
     {
         return array_combine(
@@ -351,8 +381,8 @@ final class PopupTemplateTest extends TestCase
         $event = [
             'title' => 'Kinderbibelwoche',
             'subtitle' => '',
-            'location' => '',
-            'description' => '',
+            'location' => 'Gemeindehaus',
+            'description' => 'Beschreibung',
             'start_date' => '2026-09-03 19:30:00',
             'end_date' => '2026-09-03 21:00:00',
             'all_day' => 0,
@@ -364,7 +394,7 @@ final class PopupTemplateTest extends TestCase
             'external_url' => $externalUrl,
             'series_count' => 1,
         ];
-        $order = array_values(array_diff(DetailDesign::DEFAULT_ORDER, ['description']));
+        $order = DetailDesign::DEFAULT_ORDER;
         $detailContext = 'popup';
         $shareEnabled = false;
         $icsEnabled = false;

@@ -2505,6 +2505,11 @@
     transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
+.ctp-events .ctp-events__event-link {
+    padding: 0.55rem 1rem;
+    font-size: var(--ctp-font-sm);
+}
+
 /* Im Zugriff deutlich, aber nicht laut: .ctp-button--quiet (siehe „Buttons"). */
 .ctp-events .ctp-events__share-btn:focus-visible {
     outline: 2px solid var(--ctp-accent);

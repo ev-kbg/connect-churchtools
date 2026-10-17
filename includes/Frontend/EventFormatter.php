@@ -262,10 +262,10 @@ final class EventFormatter
      *     Inline-Styles mit beliebiger Quelle durch - Besucher haetten dann
      *     Dateien von fremden Servern geladen, und das Plugin verspricht, dass
      *     sie das nicht tun (Bilder werden deshalb importiert).
-     *   - Markdown links of the form `[label](https://…)` are converted to
-     *     links after sanitizing existing HTML; labels and URLs are escaped
-     *     separately. A backslash immediately before a newline is removed so
-     *     WordPress can render the line break normally.
+     *   - Markdown bold spans (`**text**`) and links (`[label](https://…)`)
+     *     are converted after sanitizing existing HTML. A backslash
+     *     immediately before a newline is removed so WordPress can render
+     *     the line break normally.
      *   - make_clickable() turns bare URLs and mail addresses into links —
      *     ChurchTools descriptions carry registration links as plain text, and
      *     they were previously unreachable.
@@ -279,7 +279,8 @@ final class EventFormatter
     public static function descriptionHtml(string $description): string
     {
         $description = (string) preg_replace('/\\\\(?=\r?\n)/', '', $description);
-        $description = self::convertMarkdownLinks(wp_kses($description, self::DESCRIPTION_TAGS));
+        $description = self::convertMarkdownBold(wp_kses($description, self::DESCRIPTION_TAGS));
+        $description = self::convertMarkdownLinks($description);
         $html = wpautop(make_clickable($description));
 
         // maskEmails() danach fuer alles, was make_clickable() nicht zum Link
@@ -299,6 +300,30 @@ final class EventFormatter
             static fn (array $match): string => '<a href="' . esc_url($match[2]) . '">' . esc_html($match[1]) . '</a>',
             $text
         );
+    }
+
+    /**
+     * Convert Markdown bold in text nodes only, leaving sanitized HTML tags
+     * and their attributes untouched.
+     */
+    private static function convertMarkdownBold(string $text): string
+    {
+        $parts = preg_split('~(<[^>]+>)~', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+        if ($parts === false) {
+            return $text;
+        }
+
+        foreach ($parts as $index => $part) {
+            if ($index % 2 === 0) {
+                $parts[$index] = (string) preg_replace(
+                    '~\*\*([^*\r\n]+)\*\*~u',
+                    '<strong>$1</strong>',
+                    $part
+                );
+            }
+        }
+
+        return implode('', $parts);
     }
 
     /**
