@@ -5,11 +5,17 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
-## [1.38.0-kbg.7] - 2026-10-17
+## [1.38.0-kbg.8] - 2026-10-17
 
 ### Added
 
 - **Link-Symbol im Button „Weitere Informationen“.** Ein externes-Link-Icon macht den Zweck des Buttons auf einen Blick deutlich.
+
+## [1.38.0-kbg.7] - 2026-10-17
+
+### Added
+
+- **Link zum ChurchTools-Termin.** Ein gepflegter Link erscheint als Button „Weitere Informationen“ in den Termindetails und öffnet sich in einem neuen Tab.
 
 ### Changed
 
