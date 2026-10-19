@@ -68,6 +68,10 @@ final class EventsEndpoint
         $columns = isset($_GET['columns']) ? absint($_GET['columns']) : 3;
         $limit = isset($_GET['limit']) ? absint($_GET['limit']) : 0;
         $monthDividers = !empty($_GET['month_dividers']);
+        $showCalendarNameValue = isset($_GET['show_calendar_name']) && is_scalar($_GET['show_calendar_name'])
+            ? sanitize_key((string) wp_unslash($_GET['show_calendar_name']))
+            : '1';
+        $showCalendarName = $showCalendarNameValue !== '0';
         $lastMonth = isset($_GET['last_month']) ? sanitize_text_field(wp_unslash($_GET['last_month'])) : '';
         $search = isset($_GET['search']) ? sanitize_text_field(wp_unslash($_GET['search'])) : '';
         $calendar = isset($_GET['calendar']) ? absint($_GET['calendar']) : 0;
@@ -109,6 +113,7 @@ final class EventsEndpoint
                 'columns' => $columns,
                 'click' => in_array($click, self::CLICK_BEHAVIORS, true) ? $click : 'none',
                 'month_dividers' => $monthDividers,
+                'show_calendar_name' => $showCalendarName,
                 'paging' => false,
             ], mb_substr($search, 0, self::MAX_SEARCH_LENGTH), $timeframe);
 
@@ -124,6 +129,7 @@ final class EventsEndpoint
             // back to the non-clickable variant rather than to the global setting.
             'click' => in_array($click, self::CLICK_BEHAVIORS, true) ? $click : 'none',
             'month_dividers' => $monthDividers,
+            'show_calendar_name' => $showCalendarName,
             'months' => min(EventWindow::MAX_MONTHS, $months),
             'limit' => min(self::MAX_LIMIT, $limit),
             'paging' => true,

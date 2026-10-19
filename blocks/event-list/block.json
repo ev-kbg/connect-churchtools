@@ -17,6 +17,7 @@
         "search": { "type": "boolean", "default": false },
         "monthDividers": { "type": "boolean", "default": false },
         "eventfinder": { "type": "boolean", "default": false },
+        "showCalendarName": { "type": "boolean", "default": true },
         "months": { "type": "number", "default": 0 },
         "paging": { "type": "boolean", "default": true }
     },

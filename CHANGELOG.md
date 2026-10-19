@@ -5,6 +5,16 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.38.0-kbg.10] - 2026-10-20
+
+### Added
+
+- **Kalendernamen je Einbindung ausblenden.** Mit `show_calendar_name="0"` verschwinden sie in Liste, Raster und „Nächster Termin“ – auch bei nachgeladenen Terminen.
+
+### Changed
+
+- **Eventfinder ohne Zeitraumwahl.** Er zeigt nur die Kalenderauswahl, sucht immer „Jederzeit“ und verzichtet auf die Frageüberschrift.
+
 ## [1.38.0-kbg.9] - 2026-10-19
 
 ### Fixed

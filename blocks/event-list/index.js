@@ -30,6 +30,7 @@ registerBlockType(metadata.name, {
 			search,
 			monthDividers,
 			eventfinder,
+			showCalendarName,
 			months,
 			paging,
 		} = attributes;
@@ -74,6 +75,11 @@ registerBlockType(metadata.name, {
 						)}
 					</PanelBody>
 					<PanelBody title={__('Darstellung', 'churchtools-plugin')}>
+						<ToggleControl
+							label={__('Kalendernamen anzeigen', 'churchtools-plugin')}
+							checked={showCalendarName}
+							onChange={(value) => setAttributes({ showCalendarName: value })}
+						/>
 						<SelectControl
 							label={__('Ansicht', 'churchtools-plugin')}
 							value={layout}
@@ -128,7 +134,7 @@ registerBlockType(metadata.name, {
 								<ToggleControl
 									label={__('Eventfinder anzeigen', 'churchtools-plugin')}
 									help={__(
-										'Knöpfe für Kalender und Zeitraum – ersetzt den Kalenderfilter. Mit „Suchleiste anzeigen“ steht das Suchfeld im Eventfinder.',
+										'Kalenderauswahl ohne Zeitraumfilter – ersetzt den Kalenderfilter. Mit „Suchleiste anzeigen“ steht das Suchfeld im Eventfinder.',
 										'churchtools-plugin'
 									)}
 									checked={eventfinder}

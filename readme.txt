@@ -4,7 +4,7 @@ Tags: churchtools, calendar, events, sync
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.38.0-kbg.9
+Stable tag: 1.38.0-kbg.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,7 +16,7 @@ Das Plugin gleicht ausgewählte ChurchTools-Kalender, Gruppen-Homepages und auf 
 
 * **Termine automatisch übernehmen**: Serien kommen als einzelne Termine an, abgesagte verschwinden wieder. Vergangene Termine räumen sich samt Bildern selbst weg.
 * **Drei Ansichten**: Liste, Raster und „Nächster Termin“. Einbinden per Gutenberg-Block, WPBakery-Element oder Shortcode.
-* **Schnell finden**: Eventfinder mit Themen- und Zeitraum-Knöpfen, Suche und Monatsüberschriften.
+* **Schnell finden**: Eventfinder mit Kalenderauswahl ohne Zeitraumbegrenzung, Suche und Monatsüberschriften.
 * **Termindetails** als Popup oder als eigene Seite, mit einem Button zu einem in ChurchTools hinterlegten Link sowie auf Wunsch zum Teilen, als Kalenderdatei oder als Kalender-Abo.
 * **Gruppen statt iframe**: die Gruppen einer Gruppen-Homepage in derselben Optik, mit Treffzeit und freien Plätzen, auf Wunsch mit Gruppenfinder.
 * **Beiträge als Neuigkeiten**: die Beiträge öffentlicher Gruppen als Kacheln in der Optik der Gruppen, mit ganzem Text und allen Bildern im Popup. Ausgeschaltet, bis man sie einschaltet.
@@ -53,10 +53,11 @@ Termine lassen sich per Shortcode, Gutenberg-Block oder WPBakery-Element einbind
 * `limit` – Obergrenze für die Anzahl der Termine (Standard: `0` = unbegrenzt). Bei `layout="list"`/`"grid"` bestimmt der Zeitraum (`months`), wie viel angezeigt wird; `limit` wirkt dort nur als Deckel pro Nachlade-Schritt. Bei `layout="upcoming"` die Gesamtzahl inklusive Hero-Kachel (`0` = 10).
 * `columns` – Nur bei `layout="grid"` relevant: höchstens so viele Spalten, 2–6 (Standard: 3). Das ist eine Obergrenze: Jede Kachel ist mindestens 240px breit, und es stehen nur so viele nebeneinander, wie in den Inhaltsbereich passen – gemessen wird die Breite, die das Raster tatsächlich hat, nicht der Bildschirm. Drei Kacheln brauchen rund 790px; viele Block-Themes geben dem Inhalt nur um 650px, dann werden es zwei. Abhilfe steht unter „Gutenberg-Block“.
 * `click` – Klickverhalten pro Kachel: `default` (Standard, folgt der Einstellung unter „Einstellungen → Design“), `none`, `popup` oder `page`.
+* `show_calendar_name` – Kalendernamen auf den Kacheln anzeigen: `1` (Standard) oder mit `0` ausblenden. Gilt für alle Ansichten und auch für nachgeladene Termine.
 * `filter` – Kalenderfilter-Dropdown anzeigen: `1` oder `0` (Standard). Nur bei `layout="list"`/`"grid"`, erscheint nur, wenn das Ergebnis mindestens zwei verschiedene Kalender enthält.
 * `search` – Freitext-Suchleiste anzeigen (Titel/Untertitel/Ort): `1` oder `0` (Standard). Nur bei `layout="list"`/`"grid"`. Die Suche durchsucht den gesamten synchronisierten Zeitraum, nicht nur die gerade angezeigten Monate.
 * `month_dividers` – Termine nach Monat gruppiert darstellen: `1` oder `0` (Standard). Nur bei `layout="list"`/`"grid"`.
-* `finder` – Eventfinder anzeigen, eine geführte Werkzeugleiste mit Kalender- und Zeitraum-Knöpfen: `1` oder `0` (Standard). Nur bei `layout="list"`/`"grid"`; ersetzt `filter`. Mit `search="1"` steht das Suchfeld im Eventfinder. Der frühere Name `eventfinder` gilt weiter. Dieselben Schalter `finder` und `search` hat `[ctp_groups]`.
+* `finder` – Eventfinder anzeigen, eine geführte Kalenderauswahl ohne Zeitraumbegrenzung (immer „Jederzeit“): `1` oder `0` (Standard). Nur bei `layout="list"`/`"grid"`; ersetzt `filter`. Die Frageüberschrift und eine Zeitraum-Auswahl werden nicht angezeigt. Mit `search="1"` steht das Suchfeld im Eventfinder. Der frühere Name `eventfinder` gilt weiter. Dieselben Schalter `finder` und `search` hat `[ctp_groups]`.
 * `months` – Angezeigter Zeitraum pro Seite in Monaten, 1–24 (Standard: `0` = globale Einstellung unter „Einstellungen → Design“ im Bereich „Listen“, dort standardmäßig 2). Nur bei `layout="list"`/`"grid"`.
 * `paging` – Button „Weitere Termine laden“ anzeigen: `1` (Standard) oder `0`. Nur bei `layout="list"`/`"grid"`.
 
@@ -90,11 +91,11 @@ Die Zeitraumlänge ist global unter „Einstellungen → Design“ im Bereich �
 
 Der Button erscheint nur, wenn hinter dem aktuellen Zeitraum tatsächlich noch Termine liegen, und verschwindet am Ende des synchronisierten Zeitraums (siehe „Sync-Zeitraum“ unter Events → Synchronisation) von selbst. Kalenderfilter, Suche und Eventfinder greifen auch auf nachgeladene Termine. Die „Nächster Termin“-Ansicht kennt kein Nachladen – sie zeigt weiterhin eine feste Anzahl Termine über `limit`.
 
-Alternativ zum Kalenderfilter steht der **Eventfinder** (`finder="1"`) zur Verfügung: eine geführte Werkzeugleiste unter der Frage „Welche Angebote sprechen dich an?“, mit Buttons pro Kalender sowie für die Zeiträume „Diese Woche“, „Dieses Wochenende“ und „Diesen Monat“, mit `search="1"` samt Suchfeld – gedacht für Besucher, die nicht wissen, wonach sie in einem Dropdown suchen sollen. Ist `finder` aktiv, wird `filter` ignoriert und das Suchfeld steht im Eventfinder (keine doppelte Werkzeugleiste); `month_dividers` lässt sich weiterhin unabhängig dazu aktivieren. Findet ein Zeitraum keine Termine mehr – „Diesen Monat" am Monatsende etwa –, bleibt die Liste nicht leer: Darunter stehen bis zu drei der Termine, die *danach* kommen, mit einem Satz davor, der den Grund nennt. Der Zeitraum selbst wird dabei nicht erweitert, und Kalenderauswahl wie Suchbegriff gelten für den Ausblick weiter.
+Alternativ zum Kalenderfilter steht der **Eventfinder** (`finder="1"`) zur Verfügung: eine geführte Kalenderauswahl ohne Frageüberschrift und ohne Zeitraum-Auswahl. Er sucht immer im Modus „Jederzeit“; mit `search="1"` steht das Suchfeld darunter. Ist `finder` aktiv, wird `filter` ignoriert; `month_dividers` lässt sich weiterhin unabhängig dazu aktivieren.
 
 = Gutenberg-Block =
 
-Block „ChurchTools Events“ einfügen und in der Seitenleiste unter „Auswahl“ die Kalender (Checkbox-Liste der unter Events → Kalender geladenen Kalender), unter „Darstellung“ Ansicht, Spaltenzahl (nur bei Raster), maximale Anzahl der Termine, Klickverhalten sowie (außer bei „Nächster Termin“) Eventfinder, Kalenderfilter, Suchleiste, Monatsgruppierung, Nachladen-Button und Zeitraum pro Seite festlegen.
+Block „ChurchTools Events“ einfügen und in der Seitenleiste unter „Auswahl“ die Kalender (Checkbox-Liste der unter Events → Kalender geladenen Kalender), unter „Darstellung“ Ansicht, Spaltenzahl (nur bei Raster), maximale Anzahl der Termine, Klickverhalten, Kalendernamen sowie (außer bei „Nächster Termin“) Eventfinder, Kalenderfilter, Suchleiste, Monatsgruppierung, Nachladen-Button und Zeitraum pro Seite festlegen.
 
 Die Blöcke „ChurchTools Events“, „ChurchTools Gruppen“ und „ChurchTools Beiträge“ lassen sich in der Werkzeugleiste auf „Weite Breite“ oder „Volle Breite“ stellen, sofern das Theme das anbietet. Das ist der Weg zu mehr Spalten, wenn der Inhaltsbereich des Themes schmal ist. Ein Shortcode im Shortcode-Block bekommt dieselbe Breite, wenn er in einem Gruppe-Block mit weiter Breite steht.
 

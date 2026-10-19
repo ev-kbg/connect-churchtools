@@ -22,7 +22,7 @@ Das Plugin gleicht ausgewählte ChurchTools-Kalender, Gruppen-Homepages und auf 
 
 - **Termine automatisch übernehmen:** Serien kommen als einzelne Termine an, abgesagte verschwinden wieder.
 - **Drei Ansichten:** Liste, Raster und „Nächster Termin“. Einbinden per Gutenberg-Block, WPBakery-Element oder Shortcode.
-- **Schnell finden:** Eventfinder mit Themen- und Zeitraum-Knöpfen, Suche und Monatsüberschriften.
+- **Schnell finden:** Eventfinder mit Kalenderauswahl ohne Zeitraumbegrenzung, dazu Suche und Monatsüberschriften.
 - **Termindetails** als Popup oder als eigene Seite, auf Wunsch zum Teilen, als Kalenderdatei oder als Kalender-Abo.
 - **„Jetzt“ an laufenden Terminen:** Ein Termin, der gerade stattfindet, trägt ein Kennzeichen neben seinem Namen. Das Wort ist frei wählbar und lässt sich abschalten.
 - **Gruppen statt iframe:** die Gruppen einer Gruppen-Homepage in derselben Optik, mit freien Plätzen und Gruppenfinder.
@@ -50,8 +50,8 @@ Das Plugin gleicht ausgewählte ChurchTools-Kalender, Gruppen-Homepages und auf 
       <img src="docs/screenshots/naechster-termin.png" width="100%" alt="Große Kachel für den nächsten Termin, darunter die folgenden">
     </td>
     <td width="50%" valign="top">
-      <b>Eventfinder</b>: nach Thema und Zeitraum filtern<br>
-      <img src="docs/screenshots/eventfinder.png" width="100%" alt="Eventfinder mit Themen- und Zeitraum-Knöpfen über einer Terminliste">
+      <b>Eventfinder</b>: Kalender auswählen, jederzeit suchen<br>
+      <img src="docs/screenshots/eventfinder.png" width="100%" alt="Archiv-Screenshot des früheren Eventfinders mit Zeitraumwahl">
     </td>
   </tr>
   <tr>

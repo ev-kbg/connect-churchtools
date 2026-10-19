@@ -201,6 +201,16 @@ namespace ChurchToolsPlugin\Tests\Integrations {
             $this->assertSame('Ja', (new WpBakeryIntegration())->adminLabelValue('1', $param, $settings));
         }
 
+        public function testEventCalendarNameDropdownSupportsBothStates(): void
+        {
+            (new WpBakeryIntegration())->mapShortcode();
+            $settings = $GLOBALS['ctp_test_vc_map']['ctp_events'];
+            $param = array_column($settings['params'], null, 'param_name')['show_calendar_name'];
+
+            $this->assertSame('1', $param['std']);
+            $this->assertSame('0', $param['value'][__('Nein', 'churchtools-plugin')]);
+        }
+
         /** So speichert WPBakery das angekreuzte Feld - und so kommt der Finder an. */
         /**
          * `finder` heisst bei beiden Shortcodes gleich; bei den Terminen gilt
@@ -211,6 +221,16 @@ namespace ChurchToolsPlugin\Tests\Integrations {
             $this->assertTrue(Shortcode::finderEnabled(['finder' => '1', 'eventfinder' => '0']));
             $this->assertTrue(Shortcode::finderEnabled(['finder' => '0', 'eventfinder' => '1']));
             $this->assertFalse(Shortcode::finderEnabled(['finder' => '0', 'eventfinder' => '0']));
+        }
+
+        public function testEventElementCanHideCalendarNames(): void
+        {
+            (new WpBakeryIntegration())->mapShortcode();
+            $settings = $GLOBALS['ctp_test_vc_map']['ctp_events'];
+            $param = array_column($settings['params'], null, 'param_name')['show_calendar_name'];
+
+            $this->assertSame('1', $param['std']);
+            $this->assertSame('0', $param['value'][__('Nein', 'churchtools-plugin')]);
         }
 
         public function testTheSavedShortcodeShowsTheFinder(): void

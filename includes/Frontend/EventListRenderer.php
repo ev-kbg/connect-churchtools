@@ -66,8 +66,8 @@ final class EventListRenderer
         // before. Paging is scoped out for the same reason: there is no flat list
         // to append to.
         $isFilterable = $args['layout'] !== 'upcoming';
-        // Eventfinder is a self-contained guided toolbar (calendar buttons, timeframe
-        // buttons, optionales Suchfeld) that replaces the plain filter/search toolbar rather than
+        // Eventfinder is a self-contained guided toolbar (calendar buttons,
+        // optional search field) that replaces the plain filter/search toolbar rather than
         // stacking alongside it — showing both would be redundant UI over the same
         // underlying filtering, so it wins over "filter"/"search" when both are set.
         $args['eventfinder'] = $isFilterable && (bool) $args['eventfinder'];
@@ -347,6 +347,7 @@ final class EventListRenderer
             'search' => false,
             'month_dividers' => false,
             'eventfinder' => false,
+            'show_calendar_name' => true,
             // 0 = use the Design tab's global "Zeitraum pro Seite" setting.
             'months' => 0,
             'paging' => true,
@@ -377,6 +378,10 @@ final class EventListRenderer
         );
 
         $args = array_merge($args, self::designArgs($designSettings));
+        $args['show_calendar_name'] = (bool) $args['show_calendar_name'];
+        if (!$args['show_calendar_name']) {
+            $args['hidden_elements'] = array_values(array_unique(array_merge($args['hidden_elements'], ['calendar'])));
+        }
 
         // Nicht in designArgs(): Das Kennzeichen gehoert zum Termin, und die
         // Gruppenliste, die sich jene Methode mit den Terminen teilt, hat
@@ -422,6 +427,7 @@ final class EventListRenderer
             'month_dividers' => $args['month_dividers'] ? 1 : 0,
             'months' => $args['months'],
             'limit' => $args['limit'],
+            'show_calendar_name' => $args['show_calendar_name'] ? 1 : 0,
         ];
     }
 
@@ -453,6 +459,7 @@ final class EventListRenderer
             'months' => $args['months'],
             'limit' => $args['limit'],
             'min' => 2,
+            'show_calendar_name' => $args['show_calendar_name'] ? 1 : 0,
         ];
     }
 

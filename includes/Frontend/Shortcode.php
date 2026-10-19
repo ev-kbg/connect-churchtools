@@ -124,6 +124,7 @@ final class Shortcode
             // ist der aeltere Name und gilt weiter (Kompatibilitaetszusage).
             'finder' => '0',
             'eventfinder' => '0',
+            'show_calendar_name' => '1',
             // 0 = fall back to the Design tab's global "Zeitraum pro Seite".
             'months' => 0,
             'paging' => '1',
@@ -142,6 +143,7 @@ final class Shortcode
             'search' => (bool) $atts['search'],
             'month_dividers' => (bool) $atts['month_dividers'],
             'eventfinder' => self::finderEnabled($atts),
+            'show_calendar_name' => (bool) $atts['show_calendar_name'],
             'months' => (int) $atts['months'],
             'paging' => (bool) $atts['paging'],
         ]);

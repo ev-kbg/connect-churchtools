@@ -1,5 +1,5 @@
 /**
- * Calendar filter, timeframe shortcuts and search for the list/grid layouts,
+ * Calendar filter, eventfinder calendar controls and search for list/grid layouts,
  * plus the "load more" paging that appends the next time window.
  *
  * Every one of them answers twice: first in the browser, over the items already
@@ -35,8 +35,8 @@
 	}
 
 	/**
-	 * Reads the active eventfinder timeframe button ("week"/"weekend"/"month"),
-	 * or '' for "Jederzeit"/no eventfinder at all.
+	 * Reads a timeframe button from older cached finder markup, or '' (the
+	 * current finder always searches "Jederzeit" and renders no timeframe buttons).
 	 */
 	function activeTimeframe(container) {
 		var activeButton = container.querySelector('[data-ctp-finder-timeframe].ctp-events__finder-btn--active');
@@ -413,6 +413,7 @@
 			months: config.months || 0,
 			limit: config.limit || 0,
 			calendars: (config.calendars || []).join(','),
+			show_calendar_name: config.show_calendar_name === undefined || config.show_calendar_name ? 1 : 0,
 		});
 
 		var token = (requestTokens.get(container) || 0) + 1;

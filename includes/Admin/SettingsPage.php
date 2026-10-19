@@ -2578,6 +2578,11 @@ final class SettingsPage
                         <td><code>default</code></td>
                     </tr>
                     <tr>
+                        <td><code>show_calendar_name</code></td>
+                        <td><?php esc_html_e('Kalendernamen auf den Kacheln anzeigen; 0 blendet sie aus (alle Ansichten, auch bei AJAX-Nachladen).', 'churchtools-plugin'); ?></td>
+                        <td><code>1</code></td>
+                    </tr>
+                    <tr>
                         <td><code>filter</code></td>
                         <td>
                             <?php esc_html_e('Kalenderfilter-Dropdown anzeigen (nur list/grid, nur bei ≥2 Kalendern im Ergebnis)', 'churchtools-plugin'); ?>
@@ -2597,7 +2602,7 @@ final class SettingsPage
                     <tr>
                         <td><code>finder</code></td>
                         <td>
-                            <?php esc_html_e('Eventfinder: Knöpfe für Kalender und Zeitraum (nur list/grid); ersetzt filter. Mit search steht das Suchfeld im Eventfinder. Früher eventfinder – der Name gilt weiter.', 'churchtools-plugin'); ?>
+                            <?php esc_html_e('Eventfinder: Kalenderauswahl ohne Zeitraumfilter (immer „Jederzeit“, nur list/grid); ersetzt filter. Mit search steht das Suchfeld im Eventfinder. Früher eventfinder – der Name gilt weiter.', 'churchtools-plugin'); ?>
                         </td>
                         <td><code>0</code></td>
                     </tr>

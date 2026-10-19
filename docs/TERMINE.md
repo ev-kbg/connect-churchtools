@@ -18,7 +18,7 @@ Alle drei benutzen denselben Unterbau und können dasselbe:
 | **Raster** | `grid` | Bild, Datums-Badge und ein kurzer Auszug, Spaltenzahl einstellbar. Termine ohne eigenes Bild bekommen eine Fläche in der Farbe ihres Kalenders. |
 | **Nächster Termin** | `upcoming` | Eine große Kachel für den nächsten Termin, darunter die folgenden in Kurzform. |
 
-Dazu kommt der **Eventfinder** (`finder="1"`): ein geführter Einstieg statt Dropdown, mit einem Button je Thema in der Farbe des Kalenders und Knöpfen für den Zeitraum; mit `search="1"` steht das Suchfeld darin. Geht ein Zeitraum leer aus („Diesen Monat“ am Monatsende), stehen die nächsten Termine danach darunter statt einer leeren Liste.
+Dazu kommt der **Eventfinder** (`finder="1"`): eine geführte Kalenderauswahl statt Dropdown, mit einem Button je Kalender in dessen Farbe. Gesucht wird immer ohne Zeitraumbegrenzung („Jederzeit“); eine Zeitraum-Auswahl und die Frageüberschrift gibt es nicht. Mit `search="1"` steht das Suchfeld darunter.
 
 Bilder der Ansichten zeigt die [Übersicht](../README.md#so-sieht-das-aus).
 
@@ -50,6 +50,12 @@ Die Entscheidung, ob ein Termin gerade läuft, fällt im Browser des Besuchers u
 [ctp_events calendar="Gottesdienste" layout="grid" columns="3"]
 ```
 
+**Kalendernamen auf den Termin-Kacheln ausblenden**
+
+```
+[ctp_events layout="grid" show_calendar_name="0"]
+```
+
 **Teaser in der Seitenleiste: drei Termine, ohne Nachladen-Button**
 
 ```
@@ -72,9 +78,10 @@ Welche Kalender-Namen und -IDs zur Verfügung stehen, zeigt *Events → Kalender
 | `layout` | `list` (Standard), `grid` oder `upcoming` |
 | `columns` | Spalten bei `grid`, 2–6 (Standard 3) – höchstens so viele, wie in den Inhaltsbereich passen, je Kachel mindestens 240px |
 | `limit` | Obergrenze; bei `upcoming` die Gesamtzahl inklusive der großen Kachel |
-| `finder` | Eventfinder: geführte Leiste mit Themen- und Zeitraum-Knöpfen (früher `eventfinder`, gilt weiter) |
+| `finder` | Eventfinder: geführte Kalenderauswahl, immer ohne Zeitraumbegrenzung (früher `eventfinder`, gilt weiter) |
 | `filter` | Kalender-Dropdown, die einfache Variante des Eventfinders |
 | `search` | Suchfeld – allein oder im Eventfinder |
+| `show_calendar_name` | Kalendernamen auf den Kacheln anzeigen (`1`, Standard) oder ausblenden (`0`); wirkt auch bei AJAX-Nachladen |
 | `month_dividers` | Termine nach Monaten gruppieren |
 | `months` / `paging` | Länge eines Zeitraums bzw. der „Weitere Termine laden“-Button |
 | `click` | Was ein Klick auf eine Kachel tut: `popup`, `page` oder `none` |

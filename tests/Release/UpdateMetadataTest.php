@@ -57,7 +57,7 @@ final class UpdateMetadataTest extends TestCase
     {
         $verwendung = $this->sections()['verwendung'] ?? '';
 
-        foreach (['eventfinder', 'month_dividers', 'paging'] as $option) {
+        foreach (['eventfinder', 'month_dividers', 'paging', 'show_calendar_name'] as $option) {
             $this->assertStringContainsString(
                 '<code>' . $option . '</code>',
                 $verwendung,

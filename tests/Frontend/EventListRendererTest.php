@@ -10,6 +10,11 @@ use ReflectionMethod;
 
 final class EventListRendererTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        ctp_test_reset_options();
+    }
+
     /**
      * primeAttachmentCache() holt die Bilder einer Seite in einem Zug in den
      * Objekt-Cache und spart damit zwei Abfragen je Bild (55 auf 5 bei 26
@@ -99,5 +104,37 @@ final class EventListRendererTest extends TestCase
         $this->assertSame('https://example.test/info?a=1&b=2', $valid);
         $this->assertSame('', $unsafe);
         $this->assertSame('', $missing);
+    }
+
+    public function testCalendarNameVisibilityIsPreservedInBothAjaxConfigs(): void
+    {
+        $renderer = new EventListRenderer();
+        $prepareArgs = new ReflectionMethod(EventListRenderer::class, 'prepareArgs');
+        $shown = $prepareArgs->invoke($renderer, []);
+        $hidden = $prepareArgs->invoke($renderer, ['show_calendar_name' => false]);
+
+        $this->assertNotContains('calendar', $shown['hidden_elements']);
+        $this->assertContains('calendar', $hidden['hidden_elements']);
+        $this->assertSame(
+            count($hidden['hidden_elements']),
+            count(array_unique($hidden['hidden_elements'])),
+            'The instance option must not duplicate a globally hidden calendar field.'
+        );
+
+        $configArgs = array_merge($hidden, [
+            'calendar_ids' => [7],
+            'layout' => 'list',
+            'click_behavior' => 'none',
+            'month_dividers' => false,
+            'months' => 2,
+            'limit' => 0,
+            'next_page' => 1,
+            'next_offset' => 0,
+        ]);
+        $pagingConfig = new ReflectionMethod(EventListRenderer::class, 'pagingConfig');
+        $resultsConfig = new ReflectionMethod(EventListRenderer::class, 'resultsConfig');
+
+        $this->assertSame(0, $pagingConfig->invoke($renderer, $configArgs)['show_calendar_name']);
+        $this->assertSame(0, $resultsConfig->invoke($renderer, $configArgs)['show_calendar_name']);
     }
 }

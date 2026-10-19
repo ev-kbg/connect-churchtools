@@ -354,10 +354,20 @@ final class WpBakeryIntegration
                     ],
                 ],
                 [
+                    'type' => 'dropdown',
+                    'heading' => __('Kalendernamen anzeigen', 'churchtools-plugin'),
+                    'param_name' => 'show_calendar_name',
+                    'std' => '1',
+                    'value' => [
+                        __('Ja', 'churchtools-plugin') => '1',
+                        __('Nein', 'churchtools-plugin') => '0',
+                    ],
+                ],
+                [
                     'type' => 'checkbox',
                     'heading' => __('Eventfinder anzeigen', 'churchtools-plugin'),
                     'description' => __(
-                        'Knöpfe für Kalender und Zeitraum – ersetzt den Kalenderfilter. Mit „Suchleiste anzeigen“ steht das Suchfeld im Eventfinder.',
+                        'Kalenderauswahl ohne Zeitraumfilter – ersetzt den Kalenderfilter. Mit „Suchleiste anzeigen“ steht das Suchfeld im Eventfinder.',
                         'churchtools-plugin'
                     ),
                     'param_name' => 'eventfinder',
