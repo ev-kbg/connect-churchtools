@@ -5,6 +5,12 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.38.0-kbg.9] - 2026-10-19
+
+### Fixed
+
+- **Markdown in der Terminkachel.** Fettdruck-Markierungen und Markdown-Linksyntax werden vor dem Kürzen aus der Textvorschau entfernt, statt als Sternchen oder Klammern sichtbar zu sein.
+
 ## [1.38.0-kbg.8] - 2026-10-17
 
 ### Added

@@ -138,6 +138,25 @@ final class PopupTemplateTest extends TestCase
     }
 
     /**
+     * The card excerpt is plain text, but supported Markdown must not leak
+     * into it as literal notation. The same partial feeds all three layouts.
+     *
+     * @dataProvider layoutProvider
+     */
+    public function testCardExcerptDoesNotShowMarkdownMarkers(string $layout): void
+    {
+        $dom = $this->render($layout, 'none');
+        $excerpts = $this->query(
+            $dom,
+            "//*[contains(concat(' ', normalize-space(@class), ' '), ' ctp-events__excerpt ') and contains(., 'Kinderbibelwoche')]"
+        );
+
+        $this->assertCount(1, $excerpts);
+        $this->assertSame('Kinderbibelwoche 2026 – 29.10.-01.11.2026', trim($excerpts[0]->textContent));
+        $this->assertStringNotContainsString('**', $excerpts[0]->textContent);
+    }
+
+    /**
      * Zwei Zusagen an dieselbe Regel, und die zweite hat die erste schon einmal
      * gebrochen.
      *
@@ -310,7 +329,9 @@ final class PopupTemplateTest extends TestCase
                 'title' => $title,
                 'subtitle' => $title . ' subtitle',
                 'location' => 'Halle',
-                'description' => 'Description of ' . $title,
+                'description' => $title === 'Alpha'
+                    ? '**Kinderbibelwoche 2026 – 29.10.-01.11.2026**'
+                    : 'Description of ' . $title,
                 'start_date' => sprintf('2026-09-%02d 19:30:00', $day),
                 'end_date' => sprintf('2026-09-%02d 21:00:00', $day),
                 'all_day' => 0,

@@ -99,6 +99,18 @@ final class EventFormatterTest extends TestCase
         $this->assertSame('Anmeldung unter…', EventFormatter::trimWordsKeepingLines('Anmeldung unter https://musterkirche.de/anmeldung bitte', 2));
     }
 
+    public function testExcerptRemovesMarkdownMarkersBeforeTruncating(): void
+    {
+        $this->assertSame(
+            'Kinderbibelwoche 2026 – 29.10.-01.11.2026',
+            EventFormatter::excerpt('**Kinderbibelwoche 2026 – 29.10.-01.11.2026**')
+        );
+        $this->assertSame(
+            'Weitere Infos unter Anmeldung',
+            EventFormatter::excerpt('Weitere Infos unter [Anmeldung](https://example.test/anmeldung)')
+        );
+    }
+
     public function testContainsHtml(): void
     {
         $this->assertTrue(EventFormatter::containsHtml('<p>Text</p>'));

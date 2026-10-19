@@ -107,7 +107,7 @@ Auf der eigenen Terminseite steht er unter der vollen Breite, linksbündig an de
 
 Wenn am Termin in ChurchTools im Feld „Link“ eine Adresse hinterlegt ist, erscheint in den Termindetails der Button „Weitere Informationen“. Er öffnet die Adresse in einem neuen Tab.
 
-Die Beschreibung übernimmt einfache Markdown-Auszeichnungen wie **fett** (`**Text**`) sowie Markdown-Links.
+Die Beschreibung übernimmt einfache Markdown-Auszeichnungen wie **fett** (`**Text**`) sowie Markdown-Links. In der Vorschau auf den Termin-Kacheln werden die Formatierungszeichen entfernt, damit dort kein roher Markdown-Code erscheint.
 
 ### Importieren
 

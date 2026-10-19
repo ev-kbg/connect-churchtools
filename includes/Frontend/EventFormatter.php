@@ -186,13 +186,21 @@ final class EventFormatter
     /**
      * wp_trim_words() already strips tags itself (descriptions can contain HTML,
      * see descriptionHtml() below), so the result here is plain text — callers
-     * still esc_html() it like every other field. Line breaks fall away with it,
-     * which is right for a one-line card excerpt: wp_trim_words() splits on
-     * `[\n\r\t ]+`, so a description typed across several lines still reads as
-     * one continuous sentence.
+     * still esc_html() it like every other field. Supported Markdown emphasis
+     * markers and link syntax are removed first, leaving their readable text;
+     * otherwise a one-line card excerpt exposes the raw `**` and `[label](url)`
+     * notation. Line breaks fall away with it, which is right for an excerpt:
+     * wp_trim_words() splits on `[\n\r\t ]+`.
      */
     public static function excerpt(string $description, int $wordCount = 20): string
     {
+        $description = (string) preg_replace_callback(
+            '~\[([^\]\r\n]+)\]\(https?://[^\s<>()]+\)~i',
+            static fn (array $match): string => $match[1],
+            $description
+        );
+        $description = (string) preg_replace('~\*\*([^*\r\n]+)\*\*~u', '$1', $description);
+
         return wp_trim_words($description, $wordCount);
     }
 
