@@ -747,6 +747,7 @@
 			months: config.months,
 			limit: config.limit,
 			calendars: (config.calendars || []).join(','),
+			show_calendar_name: config.show_calendar_name === undefined || config.show_calendar_name ? 1 : 0,
 			// Written into the config by refreshFromServer() when a calendar
 			// filter is active: without it the next page would come back
 			// unfiltered and append events the visitor has filtered away.

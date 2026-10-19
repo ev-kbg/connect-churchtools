@@ -5,6 +5,12 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.38.0-kbg.12] - 2026-10-20
+
+### Fixed
+
+- **Kalendername bei nachgeladenen Terminen.** `show_calendar_name="0"` wird jetzt auch bei Anfragen über „Weitere Termine laden“ berücksichtigt.
+
 ## [1.38.0-kbg.11] - 2026-10-20
 
 ### Added

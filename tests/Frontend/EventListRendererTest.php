@@ -138,6 +138,17 @@ final class EventListRendererTest extends TestCase
         $this->assertSame(0, $resultsConfig->invoke($renderer, $configArgs)['show_calendar_name']);
     }
 
+    public function testLoadMoreRequestForwardsCalendarNameVisibility(): void
+    {
+        $frontendScript = (string) file_get_contents(CTP_PLUGIN_DIR . 'assets/js/frontend.js');
+
+        $this->assertStringContainsString(
+            'show_calendar_name: config.show_calendar_name === undefined || config.show_calendar_name ? 1 : 0,',
+            $frontendScript,
+            'Load-more requests must preserve the instance setting instead of showing calendar names by default.'
+        );
+    }
+
     public function testEventLocationDataBuildsGoogleMapsLinkForPopup(): void
     {
         $method = new ReflectionMethod(EventListRenderer::class, 'withCalendarMeta');
