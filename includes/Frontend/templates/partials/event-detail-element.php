@@ -165,7 +165,16 @@ if (!defined('ABSPATH')) {
             <p class="ctp-events__meta-item ctp-events__meta-item--location">
                 <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- see above. ?>
                 <?php echo Icons::location(); ?>
-                <?php echo esc_html($event['location']); ?>
+                <?php if ($detailContext === 'popup' && ($event['location_maps_url'] ?? '') !== '') : ?>
+                    <a
+                        href="<?php echo esc_url($event['location_maps_url']); ?>"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="<?php esc_attr_e('Ort in Google Maps öffnen', 'churchtools-plugin'); ?>"
+                    ><?php echo esc_html($event['location']); ?></a>
+                <?php else : ?>
+                    <?php echo esc_html($event['location']); ?>
+                <?php endif; ?>
             </p>
         <?php endif; ?>
         <?php

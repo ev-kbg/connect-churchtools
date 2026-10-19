@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ChurchToolsPlugin\Frontend;
 
+use ChurchToolsPlugin\Address;
 use ChurchToolsPlugin\Groups\GroupSettings;
 use ChurchToolsPlugin\Groups\GroupSync;
 use ChurchToolsPlugin\Settings;
@@ -354,6 +355,22 @@ final class GroupListRenderer
             $group['location_label'] = in_array('location', $hiddenElements, true)
                 ? ''
                 : trim((string) ($group['location'] ?? ''));
+            $group['location_places'] = array_values(array_filter(array_map(
+                static function ($place): array {
+                    if (!is_array($place)) {
+                        return [];
+                    }
+
+                    $label = trim((string) ($place['label'] ?? ''));
+                    $address = is_array($place['address'] ?? null) ? $place['address'] : [];
+
+                    return $label === '' ? [] : [
+                        'label' => $label,
+                        'maps_url' => Address::googleMapsUrl($address),
+                    ];
+                },
+                is_array($group['location_places'] ?? null) ? $group['location_places'] : []
+            )));
             $group['places_label'] = self::placesLabel($group);
             $group['excerpt'] = in_array('excerpt', $hiddenElements, true) || (string) ($group['note'] ?? '') === ''
                 ? ''

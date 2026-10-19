@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ChurchToolsPlugin\Frontend;
 
+use ChurchToolsPlugin\Address;
 use ChurchToolsPlugin\Settings;
 
 final class EventListRenderer
@@ -623,6 +624,9 @@ final class EventListRenderer
 
             $event['detail_url'] = EventDetailPage::urlForEvent($event);
             $event['external_url'] = self::resolveExternalUrl($event);
+            $locationDataJson = is_string($event['location_data'] ?? null) ? $event['location_data'] : '';
+            $locationData = json_decode($locationDataJson, true);
+            $event['location_maps_url'] = is_array($locationData) ? Address::googleMapsUrl($locationData) : '';
 
             /*
              * Wie viele künftige Vorkommnisse diese Serie hat — die Zahl, die

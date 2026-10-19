@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ChurchToolsPlugin\Groups;
 
 use ChurchToolsPlugin\Api\Client;
+use ChurchToolsPlugin\Address;
 use ChurchToolsPlugin\Log;
 use ChurchToolsPlugin\Security\ApiKey;
 use ChurchToolsPlugin\Settings;
@@ -304,7 +305,8 @@ final class GroupSync
         $information = is_array($group['information'] ?? null) ? $group['information'] : [];
         $maxMembers = (int) ($group['maxMemberCount'] ?? 0);
         $taken = (int) ($group['currentMemberCount'] ?? 0) + (int) ($group['requestedSeatsCount'] ?? 0);
-        $location = self::locationLabel($information['groupPlaces'] ?? null);
+        $groupPlaces = $information['groupPlaces'] ?? null;
+        $location = self::locationLabel($groupPlaces);
 
         foreach (['meetingPlace', 'meetingLocation', 'location', 'place'] as $locationField) {
             if ($location !== '') {
@@ -314,9 +316,12 @@ final class GroupSync
             $location = self::locationLabel($information[$locationField] ?? null);
 
             if ($location !== '') {
+                $groupPlaces = $information[$locationField] ?? null;
                 break;
             }
         }
+
+        $locationPlaces = self::locationPlaces($groupPlaces);
 
         return [
             'id' => $id,
@@ -331,6 +336,7 @@ final class GroupSync
             'weekday_sort' => self::sortKey($information['weekday'] ?? null),
             'meeting_time' => trim((string) ($information['meetingTime'] ?? '')),
             'location' => $location,
+            'location_places' => $locationPlaces,
             // „Jeder" ist eine gewaehlte Zielgruppe wie jede andere, keine
             // Vorgabe: An der Referenzinstanz tragen 7 von 17 Gruppen gar
             // keine (`null`, gelesen 2026-09-15). Die Zeile bleibt dann leer,
@@ -398,6 +404,55 @@ final class GroupSync
             is_string($place['zip'] ?? null) ? trim($place['zip']) : '',
             is_string($place['city'] ?? null) ? trim($place['city']) : '',
         ])));
+    }
+
+    /**
+     * Keeps public address fields from ChurchTools places for the group popup.
+     *
+     * @param mixed $places
+     *
+     * @return list<array{label: string, address: array<string, string>}>
+     */
+    private static function locationPlaces($places): array
+    {
+        if (!is_array($places)) {
+            return [];
+        }
+
+        $entries = array_is_list($places) ? $places : [$places];
+        $normalized = [];
+
+        foreach ($entries as $place) {
+            if (is_string($place)) {
+                $label = trim($place);
+                $sourceAddress = [];
+            } elseif (is_array($place)) {
+                $label = self::locationLabel($place);
+                $sourceAddress = is_array($place['address'] ?? null) ? $place['address'] : $place;
+            } else {
+                continue;
+            }
+
+            if ($label === '' || isset($normalized[$label])) {
+                continue;
+            }
+
+            $address = ['name' => $label];
+
+            foreach (['street', 'addition', 'zip', 'city', 'district', 'country', 'latitude', 'longitude'] as $field) {
+                $value = trim((string) ($sourceAddress[$field] ?? ''));
+                if ($value !== '') {
+                    $address[$field] = $value;
+                }
+            }
+
+            $normalized[$label] = [
+                'label' => $label,
+                'address' => Address::googleMapsUrl($address) !== '' ? $address : [],
+            ];
+        }
+
+        return array_values($normalized);
     }
 
     /** Der sortKey eines Stammdaten-Objekts, oder null, wenn es keins gibt. */

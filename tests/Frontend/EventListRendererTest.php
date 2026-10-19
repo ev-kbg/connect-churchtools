@@ -137,4 +137,33 @@ final class EventListRendererTest extends TestCase
         $this->assertSame(0, $pagingConfig->invoke($renderer, $configArgs)['show_calendar_name']);
         $this->assertSame(0, $resultsConfig->invoke($renderer, $configArgs)['show_calendar_name']);
     }
+
+    public function testEventLocationDataBuildsGoogleMapsLinkForPopup(): void
+    {
+        $method = new ReflectionMethod(EventListRenderer::class, 'withCalendarMeta');
+        $events = $method->invoke(new EventListRenderer(), [[
+            'id' => 1,
+            'ct_event_id' => 6781,
+            'ct_calendar_id' => 32,
+            'title' => 'Gottesdienst',
+            'subtitle' => '',
+            'description' => '',
+            'start_date' => '2026-09-06 10:30:00',
+            'end_date' => '2026-09-06 12:00:00',
+            'all_day' => 0,
+            'location' => 'Gemeindehaus, Hauptstraße 12, 71737 Kirchberg an der Murr',
+            'location_data' => wp_json_encode([
+                'name' => 'Gemeindehaus',
+                'street' => 'Hauptstraße 12',
+                'zip' => '71737',
+                'city' => 'Kirchberg an der Murr',
+            ]),
+            'attachment_id' => 0,
+        ]], 'none', []);
+
+        $this->assertSame(
+            'https://www.google.com/maps/search/?api=1&query=Gemeindehaus%2C%20Hauptstra%C3%9Fe%2012%2C%2071737%20Kirchberg%20an%20der%20Murr',
+            $events[0]['location_maps_url']
+        );
+    }
 }

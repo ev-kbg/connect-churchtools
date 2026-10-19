@@ -234,6 +234,25 @@ final class PopupTemplateTest extends TestCase
         );
     }
 
+    public function testPopupLocationLinksTheAddressToGoogleMaps(): void
+    {
+        $dom = $this->renderDetail('', 'https://www.google.com/maps/search/?api=1&query=Hauptstra%C3%9Fe%201%2C%2071737%20Kirchberg');
+        $location = $this->query(
+            $dom,
+            "//p[contains(concat(' ', normalize-space(@class), ' '), ' ctp-events__meta-item--location ')]"
+        )[0] ?? null;
+
+        $this->assertInstanceOf(DOMElement::class, $location);
+        $links = $location->getElementsByTagName('a');
+        $this->assertCount(1, $links);
+        $this->assertSame(
+            'https://www.google.com/maps/search/?api=1&query=Hauptstra%C3%9Fe%201%2C%2071737%20Kirchberg',
+            $links->item(0)->getAttribute('href')
+        );
+        $this->assertSame('_blank', $links->item(0)->getAttribute('target'));
+        $this->assertSame('noopener noreferrer', $links->item(0)->getAttribute('rel'));
+    }
+
     public function testEventLinkButtonSitsBetweenMetadataAndDescription(): void
     {
         $dom = $this->renderDetail('https://example.test/info');
@@ -402,12 +421,13 @@ final class PopupTemplateTest extends TestCase
      * Renders the shared detail partial with only the data used by its fields.
      *
      */
-    private function renderDetail(string $externalUrl): DOMDocument
+    private function renderDetail(string $externalUrl, string $locationMapsUrl = ''): DOMDocument
     {
         $event = [
             'title' => 'Kinderbibelwoche',
             'subtitle' => '',
             'location' => 'Gemeindehaus',
+            'location_maps_url' => $locationMapsUrl,
             'description' => 'Beschreibung',
             'start_date' => '2026-09-03 19:30:00',
             'end_date' => '2026-09-03 21:00:00',

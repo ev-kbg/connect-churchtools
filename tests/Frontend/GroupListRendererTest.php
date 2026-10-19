@@ -96,6 +96,32 @@ final class GroupListRendererTest extends TestCase
         $this->assertStringContainsString('ctp-events__meta-item--location', $featured);
     }
 
+    public function testGroupPopupLinksPlacesWithAddressesToGoogleMaps(): void
+    {
+        $this->homepageWith([array_merge($this->group(269, ''), [
+            'location' => 'Gemeindehaus',
+            'location_places' => [[
+                'label' => 'Gemeindehaus',
+                'address' => [
+                    'name' => 'Gemeindehaus',
+                    'street' => 'Hauptstraße 12',
+                    'zip' => '71737',
+                    'city' => 'Kirchberg an der Murr',
+                ],
+            ]],
+        ])]);
+
+        $html = (new GroupListRenderer())->render(['homepage' => 'Kleingruppen']);
+
+        $this->assertStringContainsString(
+            'href="https://www.google.com/maps/search/?api=1&amp;query=Gemeindehaus%2C%20Hauptstra%C3%9Fe%2012%2C%2071737%20Kirchberg%20an%20der%20Murr"',
+            $html
+        );
+        $this->assertStringContainsString('target="_blank"', $html);
+        $this->assertStringContainsString('rel="noopener noreferrer"', $html);
+        $this->assertStringContainsString('aria-label="„Gemeindehaus“ in Google Maps öffnen"', $html);
+    }
+
     /**
      * Die Zielgruppe steht als Angabezeile unter der Treffzeit - auch
      * „Jeder". Gruppen ohne Zielgruppe in ChurchTools und

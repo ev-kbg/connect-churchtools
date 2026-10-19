@@ -101,6 +101,14 @@ final class GroupSyncTest extends TestCase
             'weekday_sort' => 2,
             'meeting_time' => '9:30',
             'location' => 'Gemeindehaus',
+            'location_places' => [[
+                'label' => 'Gemeindehaus',
+                'address' => [
+                    'name' => 'Gemeindehaus',
+                    'zip' => '71737',
+                    'city' => 'Kirchberg an der Murr',
+                ],
+            ]],
             'target_group' => 'Jeder',
             'target_group_key' => 'everyone',
             'target_group_sort' => 1,
@@ -176,13 +184,16 @@ final class GroupSyncTest extends TestCase
     {
         $group = $this->group(81, 'Hauskreis');
         $group['information']['groupPlaces'] = [
-            ['name' => 'Gemeindehaus', 'zip' => '71737', 'city' => 'Kirchberg an der Murr'],
+            ['name' => 'Gemeindehaus', 'street' => 'Hauptstraße 12', 'zip' => '71737', 'city' => 'Kirchberg an der Murr'],
             ['name' => 'CVJM-Heim', 'zip' => '71737', 'city' => 'Kirchberg an der Murr'],
-            ['name' => 'Gemeindehaus', 'zip' => '71737', 'city' => 'Kirchberg an der Murr'],
+            ['name' => 'Gemeindehaus', 'street' => 'Hauptstraße 12', 'zip' => '71737', 'city' => 'Kirchberg an der Murr'],
         ];
+        $normalized = GroupSync::normalizeGroup($group, self::BASE);
+        $this->assertSame('Gemeindehaus, CVJM-Heim', $normalized['location']);
+        $this->assertSame('Hauptstraße 12', $normalized['location_places'][0]['address']['street']);
         $this->assertSame(
-            'Gemeindehaus, CVJM-Heim',
-            GroupSync::normalizeGroup($group, self::BASE)['location']
+            ['name' => 'CVJM-Heim', 'zip' => '71737', 'city' => 'Kirchberg an der Murr'],
+            $normalized['location_places'][1]['address']
         );
 
         $group['information']['groupPlaces'] = [['zip' => '72218', 'city' => 'Wildberg']];
@@ -211,7 +222,7 @@ final class GroupSyncTest extends TestCase
         $group = GroupSync::normalizeGroup($raw, self::BASE);
 
         $this->assertSame(
-            ['id', 'name', 'note', 'image_url', 'weekday', 'weekday_sort', 'meeting_time', 'location', 'target_group', 'target_group_key', 'target_group_sort', 'category', 'category_sort', 'max_members', 'free_places', 'waitinglist', 'url'],
+            ['id', 'name', 'note', 'image_url', 'weekday', 'weekday_sort', 'meeting_time', 'location', 'location_places', 'target_group', 'target_group_key', 'target_group_sort', 'category', 'category_sort', 'max_members', 'free_places', 'waitinglist', 'url'],
             array_keys($group)
         );
         $this->assertStringNotContainsString('Erika', (string) wp_json_encode($group));

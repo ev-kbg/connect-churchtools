@@ -1205,6 +1205,12 @@
     order: var(--ctp-order-location);
 }
 
+.ctp-events__meta-item--location a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+}
+
 /*
  * Zielgruppe einer Gruppenkachel: keine eigene Position im Design-Tab, sie
  * haengt an der Uhrzeit. Gleiche Ordnungszahl, und im Markup steht sie danach -

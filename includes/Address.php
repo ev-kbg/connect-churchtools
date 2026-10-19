@@ -131,6 +131,41 @@ final class Address
     }
 
     /**
+     * Google Maps search URL for an address. Coordinates win when present;
+     * otherwise a name is combined with the postal address. A place name on
+     * its own is not precise enough to turn into a map link.
+     */
+    public static function googleMapsUrl(array $address): string
+    {
+        $latitude = trim((string) ($address['latitude'] ?? ''));
+        $longitude = trim((string) ($address['longitude'] ?? ''));
+
+        if (
+            $latitude !== ''
+            && $longitude !== ''
+            && is_numeric($latitude)
+            && is_numeric($longitude)
+        ) {
+            $query = $latitude . ',' . $longitude;
+        } else {
+            $postalLine = self::postalLine($address);
+
+            if ($postalLine === '') {
+                return '';
+            }
+
+            $query = implode(', ', array_filter([
+                trim((string) ($address['name'] ?? '')),
+                trim((string) ($address['street'] ?? '')),
+                trim((string) ($address['addition'] ?? '')),
+                self::cityLine($address),
+            ], static fn (string $part): bool => $part !== ''));
+        }
+
+        return 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($query);
+    }
+
+    /**
      * Der Ort ohne die PLZ, aber mit dem Ortsteil - fuer `addressLocality`,
      * wo die PLZ ein eigenes Feld hat.
      */

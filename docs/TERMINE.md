@@ -98,6 +98,8 @@ Die vollständige Referenz mit allen Standardwerten steht in der [readme.txt](..
 
 Ein Klick auf einen Termin öffnet seine Details – als **Popup** auf derselben Seite oder als **eigene Terminseite**. Umgestellt wird das unter *Einstellungen → Design → Detailansicht* oder je Einbindung mit `click`.
 
+Wenn für den Ort in ChurchTools eine Anschrift oder Koordinaten gepflegt sind, ist die Ortszeile im Popup ein Link zu Google Maps und öffnet sich in einem neuen Tab. Auf der eigenen Terminseite bleibt die Ortszeile unverlinkt.
+
 ### Teilen
 
 Der „Teilen“-Button steht unter dem Termin, im Popup rechts unter der Beschreibung. Auf dem Telefon öffnet er das Teilen-Menü des Geräts, am Rechner legt er die Adresse des Termins in die Zwischenablage und meldet „Link kopiert“.

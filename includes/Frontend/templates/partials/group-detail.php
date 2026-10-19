@@ -68,7 +68,28 @@ $titleId = $titleId . '-detail';
         <p class="ctp-events__meta-item ctp-events__meta-item--location">
             <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Icons:: returns fixed, hard-coded SVG markup with no request input (see Icons.php docblock). ?>
             <?php echo Icons::location(); ?>
-            <?php echo esc_html($group['location_label']); ?>
+            <?php if (($group['location_places'] ?? []) !== []) : ?>
+                <?php foreach ($group['location_places'] as $index => $place) : ?>
+                    <?php if ($index > 0) : ?>
+                        ,
+                    <?php endif; ?>
+                    <?php if ($place['maps_url'] !== '') : ?>
+                        <a
+                            href="<?php echo esc_url($place['maps_url']); ?>"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            <?php // translators: %s is the place name. ?>
+                            aria-label="<?php echo esc_attr(sprintf(__('„%s“ in Google Maps öffnen', 'churchtools-plugin'), $place['label'])); ?>"
+                        >
+                            <?php echo esc_html($place['label']); ?>
+                        </a>
+                    <?php else : ?>
+                        <?php echo esc_html($place['label']); ?>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            <?php else : ?>
+                <?php echo esc_html($group['location_label']); ?>
+            <?php endif; ?>
         </p>
     <?php endif; ?>
     <?php if ($group['description_html'] !== '') : ?>

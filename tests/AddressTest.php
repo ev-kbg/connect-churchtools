@@ -97,6 +97,23 @@ final class AddressTest extends TestCase
         $this->assertSame([], Address::geo($this->address(['latitude' => ''])));
     }
 
+    public function testGoogleMapsUrlUsesCoordinatesWhenAvailable(): void
+    {
+        $this->assertSame(
+            'https://www.google.com/maps/search/?api=1&query=49.0368%2C8.7057',
+            Address::googleMapsUrl($this->address())
+        );
+    }
+
+    public function testGoogleMapsUrlUsesThePostalAddressWithoutCoordinates(): void
+    {
+        $this->assertSame(
+            'https://www.google.com/maps/search/?api=1&query=Gemeindehaus%2C%20Hauptstra%C3%9Fe%201%2C%2075015%20Bretten',
+            Address::googleMapsUrl($this->address(['latitude' => '', 'longitude' => '']))
+        );
+        $this->assertSame('', Address::googleMapsUrl(['name' => 'Gemeindehaus']));
+    }
+
     private function address(array $overrides = []): array
     {
         return array_replace([
