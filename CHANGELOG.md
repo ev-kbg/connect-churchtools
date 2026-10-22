@@ -5,6 +5,13 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.38.0-kbg.13] - 2026-10-22
+
+### Fixed
+
+- **Markdown in Terminbeschreibungen.** Einfache und doppelte Markdown-Auszeichnungen für kursiv und fett sowie Markdown-Links zu E-Mail-Adressen werden jetzt korrekt dargestellt.
+- **Ortsnamen bei Terminen.** Bei gepflegten ChurchTools-Adressen wird im Frontend nur noch der Ortsname angezeigt; die vollständige Adresse bleibt für den Google-Maps-Link erhalten.
+
 ## [1.38.0-kbg.12] - 2026-10-20
 
 ### Fixed

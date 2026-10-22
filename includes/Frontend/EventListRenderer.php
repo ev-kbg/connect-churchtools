@@ -626,6 +626,10 @@ final class EventListRenderer
             $event['external_url'] = self::resolveExternalUrl($event);
             $locationDataJson = is_string($event['location_data'] ?? null) ? $event['location_data'] : '';
             $locationData = json_decode($locationDataJson, true);
+            $locationName = is_array($locationData) && is_string($locationData['name'] ?? null)
+                ? trim($locationData['name'])
+                : '';
+            $event['location_label'] = $locationName !== '' ? $locationName : (string) ($event['location'] ?? '');
             $event['location_maps_url'] = is_array($locationData) ? Address::googleMapsUrl($locationData) : '';
 
             /*

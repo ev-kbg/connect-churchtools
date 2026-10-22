@@ -109,6 +109,14 @@ final class EventFormatterTest extends TestCase
             'Weitere Infos unter Anmeldung',
             EventFormatter::excerpt('Weitere Infos unter [Anmeldung](https://example.test/anmeldung)')
         );
+        $this->assertSame(
+            '§ Montag, 2. November 2026',
+            EventFormatter::excerpt('§ *Montag, 2. November 2026*')
+        );
+        $this->assertSame(
+            'Kontakt: Joris Braun',
+            EventFormatter::excerpt('Kontakt: [Joris Braun](mailto:joris.braun@gmx.de)')
+        );
     }
 
     public function testContainsHtml(): void
@@ -136,12 +144,37 @@ final class EventFormatterTest extends TestCase
     public function testDescriptionRendersMarkdownBoldAsStrongText(): void
     {
         $html = EventFormatter::descriptionHtml('**Kinderbibelwoche 2026 – 29.10.-01.11.2026**');
+        $underscoreHtml = EventFormatter::descriptionHtml('__Fetter Text__');
 
         $this->assertStringContainsString(
             '<strong>Kinderbibelwoche 2026 – 29.10.-01.11.2026</strong>',
             $html
         );
         $this->assertStringNotContainsString('**Kinderbibelwoche', $html);
+        $this->assertStringContainsString('<strong>Fetter Text</strong>', $underscoreHtml);
+    }
+
+    public function testDescriptionRendersMarkdownItalicAndMailtoLinks(): void
+    {
+        $description = "§ *Montag, 2. November 2026*\n\nChorleiter [Joris Braun](mailto:joris.braun@gmx.de) fragen.";
+        $html = EventFormatter::descriptionHtml($description);
+
+        $this->assertStringContainsString('§ <em>Montag, 2. November 2026</em>', $html);
+        $this->assertStringContainsString(
+            '<a href="mailto:&#106;&#111;&#114;&#105;&#115;&#46;&#98;&#114;&#97;&#117;&#110;&#64;&#103;&#109;&#120;&#46;&#100;&#101;">Joris Braun</a>',
+            $html
+        );
+        $this->assertStringNotContainsString('joris.braun@gmx.de', $html);
+        $this->assertStringNotContainsString('*Montag, 2. November 2026*', $html);
+        $this->assertStringNotContainsString('[Joris Braun](mailto:', $html);
+    }
+
+    public function testMarkdownUnderscoresInsideUrlsAreNotTreatedAsItalic(): void
+    {
+        $html = EventFormatter::descriptionHtml('https://example.test/some_page_name');
+
+        $this->assertStringContainsString('https://example.test/some_page_name', $html);
+        $this->assertStringNotContainsString('<em>', $html);
     }
 
     public function testDescriptionOnlyConvertsMarkdownInTextNotHtmlAttributes(): void

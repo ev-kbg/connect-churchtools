@@ -251,6 +251,7 @@ final class PopupTemplateTest extends TestCase
         );
         $this->assertSame('_blank', $links->item(0)->getAttribute('target'));
         $this->assertSame('noopener noreferrer', $links->item(0)->getAttribute('rel'));
+        $this->assertSame('Evangelisches Gemeindehaus', trim($links->item(0)->textContent));
     }
 
     public function testEventLinkButtonSitsBetweenMetadataAndDescription(): void
@@ -426,7 +427,8 @@ final class PopupTemplateTest extends TestCase
         $event = [
             'title' => 'Kinderbibelwoche',
             'subtitle' => '',
-            'location' => 'Gemeindehaus',
+            'location' => 'Gemeindehaus, Hauptstraße 12, 71737 Kirchberg an der Murr',
+            'location_label' => 'Evangelisches Gemeindehaus',
             'location_maps_url' => $locationMapsUrl,
             'description' => 'Beschreibung',
             'start_date' => '2026-09-03 19:30:00',

@@ -164,7 +164,7 @@ final class EventListRendererTest extends TestCase
             'all_day' => 0,
             'location' => 'Gemeindehaus, Hauptstraße 12, 71737 Kirchberg an der Murr',
             'location_data' => wp_json_encode([
-                'name' => 'Gemeindehaus',
+                'name' => 'Evangelisches Gemeindehaus',
                 'street' => 'Hauptstraße 12',
                 'zip' => '71737',
                 'city' => 'Kirchberg an der Murr',
@@ -173,8 +173,9 @@ final class EventListRendererTest extends TestCase
         ]], 'none', []);
 
         $this->assertSame(
-            'https://www.google.com/maps/search/?api=1&query=Gemeindehaus%2C%20Hauptstra%C3%9Fe%2012%2C%2071737%20Kirchberg%20an%20der%20Murr',
+            'https://www.google.com/maps/search/?api=1&query=Evangelisches%20Gemeindehaus%2C%20Hauptstra%C3%9Fe%2012%2C%2071737%20Kirchberg%20an%20der%20Murr',
             $events[0]['location_maps_url']
         );
+        $this->assertSame('Evangelisches Gemeindehaus', $events[0]['location_label']);
     }
 }

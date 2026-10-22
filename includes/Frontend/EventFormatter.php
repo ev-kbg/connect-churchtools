@@ -195,11 +195,14 @@ final class EventFormatter
     public static function excerpt(string $description, int $wordCount = 20): string
     {
         $description = (string) preg_replace_callback(
-            '~\[([^\]\r\n]+)\]\(https?://[^\s<>()]+\)~i',
+            '~\[([^\]\r\n]+)\]\((?:https?://|mailto:)[^\s<>()]+\)~i',
             static fn (array $match): string => $match[1],
             $description
         );
         $description = (string) preg_replace('~\*\*([^*\r\n]+)\*\*~u', '$1', $description);
+        $description = (string) preg_replace('~__([^_\r\n]+)__~u', '$1', $description);
+        $description = (string) preg_replace('~(?<!\*)\*([^*\r\n]+)\*(?!\*)~u', '$1', $description);
+        $description = (string) preg_replace('~(?<![\p{L}\p{N}_])_([^_\r\n]+)_(?![\p{L}\p{N}_])~u', '$1', $description);
 
         return wp_trim_words($description, $wordCount);
     }
@@ -270,7 +273,8 @@ final class EventFormatter
      *     Inline-Styles mit beliebiger Quelle durch - Besucher haetten dann
      *     Dateien von fremden Servern geladen, und das Plugin verspricht, dass
      *     sie das nicht tun (Bilder werden deshalb importiert).
-     *   - Markdown bold spans (`**text**`) and links (`[label](https://…)`)
+     *   - Markdown emphasis (`**bold**`, `*italic*`) and links to HTTP(S) or
+     *     email addresses (`[label](https://…)`, `[label](mailto:…)`)
      *     are converted after sanitizing existing HTML. A backslash
      *     immediately before a newline is removed so WordPress can render
      *     the line break normally.
@@ -289,6 +293,7 @@ final class EventFormatter
         $description = (string) preg_replace('/\\\\(?=\r?\n)/', '', $description);
         $description = self::convertMarkdownBold(wp_kses($description, self::DESCRIPTION_TAGS));
         $description = self::convertMarkdownLinks($description);
+        $description = self::convertMarkdownItalic($description);
         $html = wpautop(make_clickable($description));
 
         // maskEmails() danach fuer alles, was make_clickable() nicht zum Link
@@ -298,16 +303,45 @@ final class EventFormatter
     }
 
     /**
-     * Convert simple HTTP(S) Markdown links without interpreting arbitrary
-     * Markdown or allowing markup in a link label.
+     * Convert simple HTTP(S) and mailto Markdown links without interpreting
+     * arbitrary Markdown or allowing markup in a link label.
      */
     private static function convertMarkdownLinks(string $text): string
     {
         return (string) preg_replace_callback(
-            '~\[([^\]\r\n]+)\]\((https?://[^\s<>()]+)\)~i',
+            '~\[([^\]\r\n]+)\]\(((?:https?://|mailto:)[^\s<>()]+)\)~i',
             static fn (array $match): string => '<a href="' . esc_url($match[2]) . '">' . esc_html($match[1]) . '</a>',
             $text
         );
+    }
+
+    /**
+     * Convert Markdown italic spans in text nodes only, leaving sanitized HTML
+     * tags and their attributes untouched.
+     */
+    private static function convertMarkdownItalic(string $text): string
+    {
+        $parts = preg_split('~(<[^>]+>)~', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+        if ($parts === false) {
+            return $text;
+        }
+
+        foreach ($parts as $index => $part) {
+            if ($index % 2 === 0) {
+                $part = (string) preg_replace(
+                    '~(?<!\*)\*([^*\r\n]+)\*(?!\*)~u',
+                    '<em>$1</em>',
+                    $part
+                );
+                $parts[$index] = (string) preg_replace(
+                    '~(?<![\p{L}\p{N}_])_([^_\r\n]+)_(?![\p{L}\p{N}_])~u',
+                    '<em>$1</em>',
+                    $part
+                );
+            }
+        }
+
+        return implode('', $parts);
     }
 
     /**
@@ -323,8 +357,13 @@ final class EventFormatter
 
         foreach ($parts as $index => $part) {
             if ($index % 2 === 0) {
-                $parts[$index] = (string) preg_replace(
+                $part = (string) preg_replace(
                     '~\*\*([^*\r\n]+)\*\*~u',
+                    '<strong>$1</strong>',
+                    $part
+                );
+                $parts[$index] = (string) preg_replace(
+                    '~__([^_\r\n]+)__~u',
                     '<strong>$1</strong>',
                     $part
                 );

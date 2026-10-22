@@ -161,7 +161,7 @@ if (!defined('ABSPATH')) {
 
     case 'location':
         ?>
-        <?php if ($event['location'] !== '') : ?>
+        <?php if (($event['location_label'] ?? $event['location']) !== '') : ?>
             <p class="ctp-events__meta-item ctp-events__meta-item--location">
                 <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- see above. ?>
                 <?php echo Icons::location(); ?>
@@ -171,9 +171,9 @@ if (!defined('ABSPATH')) {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="<?php esc_attr_e('Ort in Google Maps öffnen', 'churchtools-plugin'); ?>"
-                    ><?php echo esc_html($event['location']); ?></a>
+                    ><?php echo esc_html($event['location_label'] ?? $event['location']); ?></a>
                 <?php else : ?>
-                    <?php echo esc_html($event['location']); ?>
+                    <?php echo esc_html($event['location_label'] ?? $event['location']); ?>
                 <?php endif; ?>
             </p>
         <?php endif; ?>

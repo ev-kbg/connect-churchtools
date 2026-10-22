@@ -142,11 +142,11 @@ $heroHasMedia = $hero !== null
                             <?php echo esc_html(EventFormatter::timeRange($hero)); ?>
                         </span>
                     <?php endif; ?>
-                    <?php if (!in_array('location', $args['hidden_elements'], true) && $hero['location'] !== '') : ?>
+                    <?php if (!in_array('location', $args['hidden_elements'], true) && ($hero['location_label'] ?? $hero['location']) !== '') : ?>
                         <span class="ctp-events__meta-item ctp-events__meta-item--location">
                             <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- see above. ?>
                             <?php echo Icons::location(); ?>
-                            <?php echo esc_html($hero['location']); ?>
+                            <?php echo esc_html($hero['location_label'] ?? $hero['location']); ?>
                         </span>
                     <?php endif; ?>
                     <?php if (!in_array('excerpt', $args['hidden_elements'], true) && $hero['description'] !== '') : ?>
@@ -221,11 +221,11 @@ $heroHasMedia = $hero !== null
                                     <?php echo esc_html(EventFormatter::timeRange($event)); ?>
                                 </span>
                             <?php endif; ?>
-                            <?php if (!in_array('location', $args['hidden_elements'], true) && $event['location'] !== '') : ?>
+                            <?php if (!in_array('location', $args['hidden_elements'], true) && ($event['location_label'] ?? $event['location']) !== '') : ?>
                                 <span class="ctp-events__meta-item ctp-events__meta-item--location">
                                     <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- see above. ?>
                                     <?php echo Icons::location(); ?>
-                                    <?php echo esc_html($event['location']); ?>
+                                    <?php echo esc_html($event['location_label'] ?? $event['location']); ?>
                                 </span>
                             <?php endif; ?>
                             <?php if (!in_array('excerpt', $args['hidden_elements'], true) && $event['description'] !== '') : ?>
