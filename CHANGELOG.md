@@ -5,6 +5,12 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.38.0-kbg.14] - 2026-10-24
+
+### Changed
+
+- **Button „Weitere Informationen“ im Event-Popup.** Der Link ist jetzt deutlicher als gefüllter Button gestaltet, mit kräftigerer Schrift, mehr Fläche und einem passenden Hover-Zustand.
+
 ## [1.38.0-kbg.13] - 2026-10-22
 
 ### Fixed

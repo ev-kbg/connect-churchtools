@@ -2512,8 +2512,16 @@
 }
 
 .ctp-events .ctp-events__event-link {
-    padding: 0.55rem 1rem;
-    font-size: var(--ctp-font-sm);
+    --ctp-btn-fg: var(--ctp-color-button-strong-text);
+    --ctp-btn-bg: var(--ctp-color-button-strong);
+    --ctp-btn-border: var(--ctp-color-button-strong);
+    --ctp-btn-fg-hover: var(--ctp-color-button-strong-text);
+    --ctp-btn-bg-hover: color-mix(in srgb, var(--ctp-color-button-strong) 82%, #fff);
+    --ctp-btn-border-hover: var(--ctp-btn-bg-hover);
+    padding: 0.7rem 1.15rem;
+    font-size: var(--ctp-font-control);
+    font-weight: 800;
+    letter-spacing: 0.045em;
 }
 
 /* Im Zugriff deutlich, aber nicht laut: .ctp-button--quiet (siehe „Buttons"). */

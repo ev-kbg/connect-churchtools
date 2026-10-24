@@ -279,7 +279,7 @@ final class PopupTemplateTest extends TestCase
 
         $css = (string) file_get_contents(CTP_PLUGIN_DIR . 'assets/css/frontend.css');
         $this->assertMatchesRegularExpression(
-            '/\.ctp-events \.ctp-events__event-link \{[^}]*padding: 0\.55rem 1rem;[^}]*font-size: var\(--ctp-font-sm\);/s',
+            '/\.ctp-events \.ctp-events__event-link \{[^}]*--ctp-btn-bg: var\(--ctp-color-button-strong\);[^}]*padding: 0\.7rem 1\.15rem;[^}]*font-size: var\(--ctp-font-control\);[^}]*font-weight: 800;/s',
             $css
         );
     }
