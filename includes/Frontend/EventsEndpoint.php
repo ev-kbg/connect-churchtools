@@ -62,6 +62,12 @@ final class EventsEndpoint
         $layout = isset($_GET['layout']) ? sanitize_key(wp_unslash($_GET['layout'])) : 'list';
         $click = isset($_GET['click']) ? sanitize_key(wp_unslash($_GET['click'])) : 'none';
         $rawCalendars = isset($_GET['calendars']) ? sanitize_text_field(wp_unslash($_GET['calendars'])) : '';
+        if (isset($_GET['tags']) && !is_string($_GET['tags'])) {
+            wp_send_json_error(['message' => 'invalid tag filter'], 400);
+        }
+        $tags = isset($_GET['tags']) && is_string($_GET['tags'])
+            ? sanitize_text_field(wp_unslash($_GET['tags']))
+            : '';
         $page = isset($_GET['page']) ? absint($_GET['page']) : 0;
         $offset = isset($_GET['offset']) ? absint($_GET['offset']) : 0;
         $months = isset($_GET['months']) ? absint($_GET['months']) : EventWindow::DEFAULT_MONTHS;
@@ -77,6 +83,12 @@ final class EventsEndpoint
         $calendar = isset($_GET['calendar']) ? absint($_GET['calendar']) : 0;
         $timeframe = isset($_GET['timeframe']) ? sanitize_key(wp_unslash($_GET['timeframe'])) : '';
         // phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+        try {
+            EventTagFilter::parse($tags);
+        } catch (\InvalidArgumentException $exception) {
+            wp_send_json_error(['message' => $exception->getMessage()], 400);
+        }
 
         if (!in_array($layout, self::LAYOUTS, true)) {
             wp_send_json_error(['message' => 'invalid layout'], 400);
@@ -109,6 +121,7 @@ final class EventsEndpoint
         if ($search !== '' || $timeframe !== '') {
             $result = (new EventListRenderer())->renderMatches([
                 'calendar_ids' => $calendarIds,
+                'tags' => $tags,
                 'layout' => $layout,
                 'columns' => $columns,
                 'click' => in_array($click, self::CLICK_BEHAVIORS, true) ? $click : 'none',
@@ -122,6 +135,7 @@ final class EventsEndpoint
 
         $result = (new EventListRenderer())->renderItems([
             'calendar_ids' => $calendarIds,
+            'tags' => $tags,
             'layout' => $layout,
             'columns' => $columns,
             // Already resolved server-side when the first page was rendered, so

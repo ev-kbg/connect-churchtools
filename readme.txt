@@ -4,7 +4,7 @@ Tags: churchtools, calendar, events, sync
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.38.0-kbg.14
+Stable tag: 1.38.0-kbg.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,19 @@ Termine lassen sich per Shortcode, Gutenberg-Block oder WPBakery-Element einbind
 = Shortcode =
 
 `[ctp_events calendar="1,Gottesdienste" layout="list" columns="3"]`
+
+Optionaler Tag-Filter je Kalender:
+`[ctp_events calendar="7,12" tags="7:Familie|Kinder;12:Musik"]`
+
+Kalender 7 zeigt Familie ODER Kinder, Kalender 12 Musik. Tag-Namen oder
+Tag-IDs sind möglich. Kalender ohne Zuordnung bleiben ungefiltert.
+Statt Kalender-IDs sind auch eindeutige Kalendernamen möglich, z. B.
+`tags="Gottesdienste:Familie|Kinder;Jugend:Musik"`. Groß-/Kleinschreibung
+spielt keine Rolle. Unbekannte oder mehrdeutige Namen erzeugen einen Fehler;
+verwende dann die Kalender-ID.
+Die Einschränkung bleibt in Suche, Eventfinder und beim Nachladen erhalten.
+Nach dem Update einmal Termine synchronisieren, damit Tags importiert werden.
+Weitere Hinweise und Syntax: docs/TERMINE.md.
 
 * `calendar` – Kommagetrennte Liste von Kalender-IDs und/oder -Namen. Leer = alle aktiven Kalender.
 * `layout` – Ansicht: `list` (Standard), `grid` oder `upcoming`.
@@ -550,6 +563,11 @@ Behebt mehrere Fehler rund um Antworten der ChurchTools-API, die als „nichts v
 Release-Kandidat vor 1.0.0. Enthält einen Fix, der den Button „Kalender von ChurchTools laden“ wieder funktionsfähig macht, und stellt den WP-Cron-Termin erstmals tatsächlich auf das im Tab „Synchronisation“ gewählte Intervall um. Nach dem Update einmal die Plugin-Seite im Backend aufrufen, damit der Zeitplan korrigiert wird.
 
 == Changelog ==
+
+= 1.38.0-kbg.15 =
+
+* Neu: Kalenderbezogene Tag-Filter für `[ctp_events]`, z. B. `tags="Gottesdienste:Familie|Kinder;12:Musik"`. Kalender und Tags können über Namen oder IDs angegeben werden. Pro Kalender gilt ODER; Kalender ohne Zuordnung bleiben ungefiltert. Suche, Eventfinder und Nachladen behalten den Filter bei.
+* Wichtig: Nach dem Update einmal Termine synchronisieren, damit die Tags mit importiert werden. Unbekannte oder mehrdeutige Kalendernamen im Tag-Filter erzeugen eine Fehlermeldung statt einer ungefilterten Liste.
 
 = 1.38.0 =
 

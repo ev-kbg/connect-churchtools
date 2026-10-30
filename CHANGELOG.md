@@ -5,6 +5,17 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.38.0-kbg.15] - 2026-10-30
+
+### Added
+
+- **Tag-Filter pro Kalender für ctp_events.** Mit `tags="Gottesdienste:Familie|Kinder;12:Musik"` lassen sich Kalender unabhängig auf einen oder mehrere Tags einschränken. Kalendernamen und -IDs sowie Tag-Namen und -IDs sind möglich. Innerhalb eines Kalenders gilt ODER; Kalender ohne Tag-Zuordnung bleiben ungefiltert. Die Einschränkung bleibt in allen Layouts, bei Suche, Eventfinder und Nachladen erhalten.
+- **Validierung der Tag-Zuordnungen.** Ungültige Zuordnungen sowie unbekannte oder mehrdeutige Kalendernamen erzeugen eine Fehlermeldung statt einer ungefilterten Terminliste.
+
+### Upgrade
+
+- **Einmal Termine synchronisieren.** Erst nach einem erneuten Import stehen die über die ChurchTools-API zusätzlich angeforderten Tags für die Filterung bereit. Alte Datensätze ohne Tag-Daten erfüllen einen gesetzten Tag-Filter nicht.
+
 ## [1.38.0-kbg.14] - 2026-10-24
 
 ### Changed

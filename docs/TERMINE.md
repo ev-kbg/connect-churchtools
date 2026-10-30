@@ -32,6 +32,43 @@ Die Entscheidung, ob ein Termin gerade läuft, fällt im Browser des Besuchers u
 
 ## Beispiele
 
+### Tag-Filter pro Kalender
+
+```
+[ctp_events calendar="7,12" tags="7:Familie|Kinder;12:Musik" layout="list"]
+```
+
+Aus Kalender **7** werden nur Termine mit dem Tag **Familie ODER Kinder**
+angezeigt, aus Kalender **12** nur Termine mit **Musik**. Statt Tag-Namen
+können Tag-IDs verwendet werden, etwa `tags="7:42|43;12:18"`. Der Vergleich
+von Namen ignoriert Groß-/Kleinschreibung. Die Zuordnung vor dem Doppelpunkt
+kann eine **Kalender-ID oder ein Kalendername** sein, auch gemischt:
+
+```
+[ctp_events calendar="Gottesdienste,Jugend" tags="Gottesdienste:Familie|Kinder;Jugend:Musik"]
+```
+
+Kalendernamen werden ohne Beachtung der Groß-/Kleinschreibung mit den im
+Plugin gespeicherten Kalendern abgeglichen. Unbekannte oder mehrfach
+vorhandene Namen erzeugen eine Fehlermeldung; verwende dann die eindeutige
+Kalender-ID. Nach einer Umbenennung muss der Name im Shortcode angepasst
+werden. Bei Kalendernamen mit `:` oder `;` verwende ebenfalls die ID.
+
+Kalender ohne Tag-Zuordnung bleiben ungefiltert. Ohne `tags` bleibt das
+bisherige Verhalten unverändert. Der Filter gilt für alle drei Layouts,
+die Suche, den Eventfinder und das Nachladen; mehrere eingebundene Listen
+können unterschiedliche Filter verwenden. `|` trennt Tags, `;` trennt
+Kalenderzuordnungen. Enthält ein Tag-Name eines dieser Zeichen, verwende
+stattdessen seine ID. Ungültige Zuordnungen erzeugen eine Fehlermeldung
+statt einer ungefilterten Terminliste.
+
+**Nach dem Update einmal Termine synchronisieren:** Erst dabei werden die
+Tags über die ChurchTools-API mit importiert. Alte Datensätze ohne Tag-Daten
+erfüllen einen gesetzten Tag-Filter nicht. Der Filter ist eine
+Darstellungsoption, keine Zugriffskontrolle.
+
+### Weitere Beispiele
+
 **Startseite: der nächste Termin, groß, mit drei weiteren darunter**
 
 ```
@@ -75,6 +112,7 @@ Welche Kalender-Namen und -IDs zur Verfügung stehen, zeigt *Events → Kalender
 | Option | Wirkung |
 | --- | --- |
 | `calendar` | Kalender-IDs und/oder -Namen, kommagetrennt. Leer = alle aktiven |
+| `tags` | Optionaler Tag-Filter je Kalender-ID oder -Name: `Gottesdienste:Familie|Kinder;12:Musik`. Tag-Namen oder IDs, ODER je Kalender; ohne Zuordnung ungefiltert |
 | `layout` | `list` (Standard), `grid` oder `upcoming` |
 | `columns` | Spalten bei `grid`, 2–6 (Standard 3) – höchstens so viele, wie in den Inhaltsbereich passen, je Kachel mindestens 240px |
 | `limit` | Obergrenze; bei `upcoming` die Gesamtzahl inklusive der großen Kachel |

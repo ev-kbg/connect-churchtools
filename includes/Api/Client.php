@@ -49,6 +49,7 @@ final class Client
     {
         return $this->request('GET', '/api/calendars/appointments', [
             'calendar_ids' => $calendarIds,
+            'include' => ['tags'],
             'from' => $from->format('Y-m-d'),
             'to' => $to->format('Y-m-d'),
         ]);

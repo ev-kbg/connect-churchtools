@@ -397,6 +397,15 @@ final class SyncEngineTest extends TestCase
         return $method->invoke(null, $envelope);
     }
 
+    public function testRawDataRetainsAppointmentTagsForFiltering(): void
+    {
+        $envelope = $this->envelope();
+        $tags = [['id' => 42, 'name' => 'Familie']];
+        $envelope['tags'] = $tags;
+        $row = $this->mapOccurrence($envelope);
+        $this->assertSame($tags, $row['raw_data']['tags']);
+    }
+
     /**
      * Wer einen Termin angelegt oder geaendert hat, hat in der gespeicherten
      * Rohantwort nichts zu suchen (Sicherheits-Review 2026-09-14) - an jeder

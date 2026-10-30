@@ -29,24 +29,25 @@ final class EventQueryCache
         ?string $startFrom,
         ?string $startBefore,
         int $limit,
-        int $offset = 0
+        int $offset = 0,
+        array $tagFilters = []
     ): array {
-        $key = self::cacheKey($calendarIds, $limit, $startFrom, $startBefore, 'events', $offset);
+        $key = self::cacheKey($calendarIds, $limit, $startFrom, $startBefore, 'events', $offset, $tagFilters === [] ? '' : (string) wp_json_encode($tagFilters));
         $cached = get_transient($key);
 
         if (is_array($cached)) {
             return $cached;
         }
 
-        $events = (new EventRepository())->findInWindow($calendarIds, $startFrom, $startBefore, $limit, $offset);
+        $events = (new EventRepository())->findInWindow($calendarIds, $startFrom, $startBefore, $limit, $offset, '', $tagFilters);
         set_transient($key, $events, self::TTL);
 
         return $events;
     }
 
-    public static function findUpcoming(array $calendarIds, int $limit): array
+    public static function findUpcoming(array $calendarIds, int $limit, array $tagFilters = []): array
     {
-        return self::findInWindow($calendarIds, null, null, $limit);
+        return self::findInWindow($calendarIds, null, null, $limit, 0, $tagFilters);
     }
 
     /**
@@ -56,16 +57,16 @@ final class EventQueryCache
      * because get_transient() returns false for "not cached", which would be
      * indistinguishable from a cached `false`.
      */
-    public static function hasEventsFrom(array $calendarIds, string $startFrom): bool
+    public static function hasEventsFrom(array $calendarIds, string $startFrom, array $tagFilters = []): bool
     {
-        $key = self::cacheKey($calendarIds, 0, $startFrom, null, 'events_more');
+        $key = self::cacheKey($calendarIds, 0, $startFrom, null, 'events_more', 0, $tagFilters === [] ? '' : (string) wp_json_encode($tagFilters));
         $cached = get_transient($key);
 
         if (is_numeric($cached)) {
             return (int) $cached === 1;
         }
 
-        $hasMore = (new EventRepository())->hasEventsFrom($calendarIds, $startFrom);
+        $hasMore = (new EventRepository())->hasEventsFrom($calendarIds, $startFrom, $tagFilters);
         set_transient($key, $hasMore ? 1 : 0, self::TTL);
 
         return $hasMore;
@@ -84,16 +85,16 @@ final class EventQueryCache
      *
      * @return int[]
      */
-    public static function calendarIdsWithUpcoming(array $calendarIds): array
+    public static function calendarIdsWithUpcoming(array $calendarIds, array $tagFilters = []): array
     {
-        $key = self::cacheKey($calendarIds, 0, null, null, 'events_calendars');
+        $key = self::cacheKey($calendarIds, 0, null, null, 'events_calendars', 0, $tagFilters === [] ? '' : (string) wp_json_encode($tagFilters));
         $cached = get_transient($key);
 
         if (is_array($cached) && array_key_exists('ids', $cached)) {
             return $cached['ids'];
         }
 
-        $ids = (new EventRepository())->calendarIdsWithUpcoming($calendarIds);
+        $ids = (new EventRepository())->calendarIdsWithUpcoming($calendarIds, $tagFilters);
         set_transient($key, ['ids' => $ids], self::TTL);
 
         return $ids;
@@ -114,16 +115,17 @@ final class EventQueryCache
         string $search,
         ?string $startFrom,
         ?string $startBefore,
-        int $limit
+        int $limit,
+        array $tagFilters = []
     ): array {
-        $key = self::cacheKey($calendarIds, $limit, $startFrom, $startBefore, 'events_search', 0, md5($search));
+        $key = self::cacheKey($calendarIds, $limit, $startFrom, $startBefore, 'events_search', 0, md5($search) . ($tagFilters === [] ? '' : (string) wp_json_encode($tagFilters)));
         $cached = get_transient($key);
 
         if (is_array($cached)) {
             return $cached;
         }
 
-        $events = (new EventRepository())->findInWindow($calendarIds, $startFrom, $startBefore, $limit, 0, $search);
+        $events = (new EventRepository())->findInWindow($calendarIds, $startFrom, $startBefore, $limit, 0, $search, $tagFilters);
         set_transient($key, $events, self::TTL);
 
         return $events;

@@ -17,6 +17,20 @@ use RuntimeException;
  */
 final class ClientTest extends TestCase
 {
+    public function testAppointmentsRequestIncludesTags(): void
+    {
+        ctp_test_reset_http();
+        ctp_test_queue_raw_http('{"data":[]}');
+        (new Client('https://example.church.tools', 'token'))->getEvents(
+            [7],
+            new \DateTimeImmutable('2026-10-01'),
+            new \DateTimeImmutable('2026-11-01')
+        );
+        $calls = ctp_test_http_calls();
+        parse_str((string) parse_url($calls[0]['url'], PHP_URL_QUERY), $query);
+        $this->assertSame(['tags'], $query['include']);
+    }
+
     /**
      * Der Normalfall: ChurchTools antwortet mit JSON, die Meldung wird
      * unverändert übernommen.

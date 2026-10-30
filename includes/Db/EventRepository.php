@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ChurchToolsPlugin\Db;
 
 use DateTimeInterface;
+use ChurchToolsPlugin\Frontend\EventTagFilter;
 
 /**
  * Not `final` solely so PHPUnit can double it: SyncEngine::syncSeriesImage()
@@ -290,7 +291,8 @@ class EventRepository
         ?string $startBefore = null,
         int $limit = 0,
         int $offset = 0,
-        string $search = ''
+        string $search = '',
+        array $tagFilters = []
     ): array {
         global $wpdb;
 
@@ -322,7 +324,7 @@ class EventRepository
 
         $sql .= ' ORDER BY start_date ASC';
 
-        if ($limit > 0) {
+        if ($limit > 0 && $tagFilters === []) {
             $sql .= ' LIMIT %d OFFSET %d';
             $params[] = $limit;
             $params[] = max(0, $offset);
@@ -330,6 +332,14 @@ class EventRepository
 
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql is built from string literals plus a dynamically-sized "%d,%d,..." placeholder list (WordPress's own documented pattern for IN clauses with a variable-length array), then passed straight into $wpdb->prepare() with matching positional $params.
         $results = $wpdb->get_results($wpdb->prepare($sql, ...$params), ARRAY_A);
+
+        if ($tagFilters !== []) {
+            // Filter before slicing: otherwise a full page of non-matches
+            // would hide later matches and break the paging cursor.
+            $results = EventTagFilter::apply($results ?: [], $tagFilters);
+
+            return $limit > 0 ? array_slice($results, max(0, $offset), $limit) : $results;
+        }
 
         return $results ?: [];
     }
@@ -394,9 +404,16 @@ class EventRepository
      *
      * @return int[]
      */
-    public function calendarIdsWithUpcoming(array $calendarIds = []): array
+    public function calendarIdsWithUpcoming(array $calendarIds = [], array $tagFilters = []): array
     {
         global $wpdb;
+
+        if ($tagFilters !== []) {
+            return array_values(array_unique(array_map(
+                static fn (array $event): int => (int) $event['ct_calendar_id'],
+                $this->findInWindow($calendarIds, null, null, 0, 0, '', $tagFilters)
+            )));
+        }
 
         $sql = 'SELECT DISTINCT ct_calendar_id FROM %i WHERE end_date >= %s';
         $params = [$this->table, current_time('mysql')];
@@ -419,9 +436,13 @@ class EventRepository
      * SELECT 1 ... LIMIT 1 rather than a COUNT(*): the caller only needs the
      * yes/no, and counting would scan every remaining row of the sync horizon.
      */
-    public function hasEventsFrom(array $calendarIds, string $startFrom): bool
+    public function hasEventsFrom(array $calendarIds, string $startFrom, array $tagFilters = []): bool
     {
         global $wpdb;
+
+        if ($tagFilters !== []) {
+            return $this->findInWindow($calendarIds, $startFrom, null, 1, 0, '', $tagFilters) !== [];
+        }
 
         $sql = 'SELECT 1 FROM %i WHERE end_date >= %s AND start_date >= %s';
         $params = [$this->table, current_time('mysql'), $startFrom];

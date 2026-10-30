@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace ChurchToolsPlugin\Frontend;
 
 use ChurchToolsPlugin\Settings;
+use ChurchToolsPlugin\Log;
+use InvalidArgumentException;
 
 final class Shortcode
 {
@@ -109,6 +111,7 @@ final class Shortcode
     {
         $atts = shortcode_atts([
             'calendar' => '',
+            'tags' => '',
             'layout' => 'list',
             // 0 = uncapped: how much is shown is decided by the time window
             // ("months" below), not by a count. Still honored when set, as a
@@ -133,8 +136,17 @@ final class Shortcode
         $refs = array_filter(array_map('trim', explode(',', (string) $atts['calendar'])));
         $calendarIds = Settings::resolveCalendarIds($refs);
 
+        try {
+            EventTagFilter::parse((string) $atts['tags']);
+        } catch (InvalidArgumentException $exception) {
+            Log::warning(Log::AREA_EVENTS, $exception->getMessage());
+
+            return '<p role="alert">' . esc_html__('Ungültiger Tag-Filter im ctp_events-Shortcode.', 'churchtools-plugin') . '</p>';
+        }
+
         return (new EventListRenderer())->render([
             'calendar_ids' => $calendarIds,
+            'tags' => (string) $atts['tags'],
             'layout' => $atts['layout'],
             'limit' => (int) $atts['limit'],
             'columns' => (int) $atts['columns'],

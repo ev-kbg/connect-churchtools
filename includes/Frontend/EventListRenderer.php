@@ -48,11 +48,11 @@ final class EventListRenderer
 
         if ($args['layout'] === 'upcoming') {
             $limit = $args['limit'] > 0 ? $args['limit'] : self::UPCOMING_FALLBACK_LIMIT;
-            $events = EventQueryCache::findUpcoming($args['calendar_ids'], $limit);
+            $events = EventQueryCache::findUpcoming($args['calendar_ids'], $limit, $args['tag_filters']);
             $args['next_page'] = null;
             $args['next_offset'] = 0;
         } else {
-            $page = EventPager::load($args['calendar_ids'], 0, $args['months'], $args['limit']);
+            $page = EventPager::load($args['calendar_ids'], 0, $args['months'], $args['limit'], 0, $args['tag_filters']);
             $events = $page['events'];
             $args['next_page'] = $page['next_page'];
             $args['next_offset'] = $page['next_offset'];
@@ -131,7 +131,7 @@ final class EventListRenderer
         }
 
         $designSettings = Settings::get();
-        $result = EventPager::load($args['calendar_ids'], $page, $args['months'], $args['limit'], $offset);
+        $result = EventPager::load($args['calendar_ids'], $page, $args['months'], $args['limit'], $offset, $args['tag_filters']);
         $events = $this->withCalendarMeta(
             $result['events'],
             $args['click_behavior'],
@@ -196,7 +196,8 @@ final class EventListRenderer
             $search,
             $bounds['from'] ?? null,
             $bounds['before'] ?? null,
-            self::MATCH_LIMIT
+            self::MATCH_LIMIT,
+            $args['tag_filters']
         );
 
         /*
@@ -224,7 +225,8 @@ final class EventListRenderer
                 $search,
                 $bounds['before'],
                 null,
-                self::OUTLOOK_LIMIT
+                self::OUTLOOK_LIMIT,
+                $args['tag_filters']
             )
             : [];
         // Ist auch danach nichts mehr da, gibt es nichts anzukündigen: Dann ist
@@ -338,6 +340,7 @@ final class EventListRenderer
     {
         $args = wp_parse_args($args, [
             'calendar_ids' => [],
+            'tags' => '',
             'layout' => 'list',
             // 0 = no cap: the month window decides how much is shown. An explicit
             // limit still works and then acts as a safety cap per page.
@@ -366,6 +369,7 @@ final class EventListRenderer
         // Hintertuer sein. [0] statt [] als "nichts gefunden"-Sentinel, weil ein
         // leeres Array wieder "alle" bedeuten wuerde.
         $args['calendar_ids'] = self::enabledOnly((array) $args['calendar_ids']);
+        $args['tag_filters'] = EventTagFilter::parse((string) $args['tags']);
 
         $args['layout'] = in_array($args['layout'], self::LAYOUTS, true) ? $args['layout'] : 'list';
         $args['columns'] = min(self::MAX_COLUMNS, max(self::MIN_COLUMNS, (int) $args['columns']));
@@ -429,6 +433,7 @@ final class EventListRenderer
             'months' => $args['months'],
             'limit' => $args['limit'],
             'show_calendar_name' => $args['show_calendar_name'] ? 1 : 0,
+            'tags' => $args['tags'],
         ];
     }
 
@@ -461,6 +466,7 @@ final class EventListRenderer
             'limit' => $args['limit'],
             'min' => 2,
             'show_calendar_name' => $args['show_calendar_name'] ? 1 : 0,
+            'tags' => $args['tags'],
         ];
     }
 
@@ -775,7 +781,7 @@ final class EventListRenderer
      */
     private function filterCalendars(array $args): array
     {
-        $withEvents = EventQueryCache::calendarIdsWithUpcoming($args['calendar_ids']);
+        $withEvents = EventQueryCache::calendarIdsWithUpcoming($args['calendar_ids'], $args['tag_filters']);
         $calendars = array_values(array_filter(
             $this->configuredCalendars($args['calendar_ids']),
             static fn (array $calendar): bool => in_array($calendar['id'], $withEvents, true)

@@ -2535,6 +2535,11 @@ final class SettingsPage
                         <td>&ndash;</td>
                     </tr>
                     <tr>
+                        <td><code>tags</code></td>
+                        <td><?php esc_html_e('Tag-Filter pro Kalender-ID oder eindeutigem Kalendernamen, z. B. Gottesdienste:Familie|Kinder;12:Musik. Tag-Namen oder Tag-IDs, | bedeutet ODER. Groß-/Kleinschreibung wird ignoriert. Unbekannte oder mehrdeutige Kalendernamen erzeugen einen Fehler. Kalender ohne Zuordnung bleiben ungefiltert. Nach dem Update einmal Termine synchronisieren.', 'churchtools-plugin'); ?></td>
+                        <td>&ndash;</td>
+                    </tr>
+                    <tr>
                         <td><code>layout</code></td>
                         <td><code>list</code> &middot; <code>grid</code> &middot; <code>upcoming</code></td>
                         <td><code>list</code></td>

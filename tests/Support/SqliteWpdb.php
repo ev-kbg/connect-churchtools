@@ -77,6 +77,7 @@ final class SqliteWpdb
                 title TEXT NOT NULL DEFAULT \'\',
                 subtitle TEXT NOT NULL DEFAULT \'\',
                 location TEXT NOT NULL DEFAULT \'\',
+                raw_data TEXT NOT NULL DEFAULT \'\',
                 updated_at TEXT NOT NULL DEFAULT \'\'
             )'
         );

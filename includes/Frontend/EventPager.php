@@ -48,7 +48,8 @@ final class EventPager
         int $page,
         int $months,
         int $limit,
-        int $offset = 0
+        int $offset = 0,
+        array $tagFilters = []
     ): array {
         $window = EventWindow::forPage($page, $months);
         $offset = max(0, $offset);
@@ -59,7 +60,8 @@ final class EventPager
                 $window->startFrom(),
                 $window->startBefore(),
                 $limit,
-                $offset
+                $offset,
+                $tagFilters
             );
 
             if ($events !== []) {
@@ -80,14 +82,14 @@ final class EventPager
                 return [
                     'events' => $events,
                     'page' => $window->page(),
-                    'next_page' => EventQueryCache::hasEventsFrom($calendarIds, $window->startBefore())
+                    'next_page' => EventQueryCache::hasEventsFrom($calendarIds, $window->startBefore(), $tagFilters)
                         ? $window->page() + 1
                         : null,
                     'next_offset' => 0,
                 ];
             }
 
-            if (!EventQueryCache::hasEventsFrom($calendarIds, $window->startBefore())) {
+            if (!EventQueryCache::hasEventsFrom($calendarIds, $window->startBefore(), $tagFilters)) {
                 return [
                     'events' => [],
                     'page' => $window->page(),
