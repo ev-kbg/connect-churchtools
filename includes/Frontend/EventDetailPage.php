@@ -315,6 +315,7 @@ final class EventDetailPage
         // DetailSeo). Das Canonical kommt hier weiter von WordPress selbst, es
         // gibt ja einen Beitrag — die Zeile darüber biegt es auf den Termin um.
         DetailSeo::registerForEvent($event);
+        AvadaEventDetail::registerForEvent($event);
     }
 
     /**
@@ -456,6 +457,7 @@ final class EventDetailPage
         // Beitrag, aus dem WordPress ein Canonical bauen könnte — also setzt
         // DetailSeo es selbst (das zweite Argument).
         DetailSeo::registerForEvent($event, true);
+        AvadaEventDetail::registerForEvent($event);
         add_action('wp_head', [self::class, 'maybeRenderViewportMetaTag'], 0);
 
         status_header(200);

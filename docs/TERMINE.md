@@ -174,6 +174,16 @@ Alle drei Knöpfe sind standardmäßig aus. Eingeschaltet werden sie unter *Eins
 
 Keiner der Knöpfe lädt ein Skript von Drittanbietern oder ein Zählpixel.
 
+## Avada: Titelbereich und Breadcrumb
+
+Auf Termin-Detailseiten übernimmt Avadas klassischer Seitentitelbereich den
+Termintitel statt eines WordPress-Beitragstitels. Ein fremder Untertitel wird
+entfernt. Wenn dort Avada-Breadcrumbs eingeschaltet sind, zeigen sie
+**Startseite → Termintitel**; eine konfigurierte Suchbox bleibt unverändert.
+Das gilt sowohl für die ID-Adresse als auch für Termine unter einer
+Elternseite. Normale WordPress-Seiten bleiben unverändert. Individuelle
+Titelbereiche aus dem Avada Layout Builder sind davon nicht erfasst.
+
 ## Adressen der Terminseiten
 
 Jeder Termin hat eine eigene Adresse aus **Titel und Datum** (`gottesdienst-06-09-2026`), nicht aus einer Nummer und nicht aus dem Titel allein: „Gottesdienst“ gibt es jedes Wochenende, ein Titel benennt also eine Serie und nicht einen Termin. Ändert sich der Titel in ChurchTools, ändert sich die Adresse mit. Wird die Elternseite nachträglich gesetzt, leiten die bisherigen Adressen dauerhaft auf die neuen weiter. Wie man die Elternseite setzt: [Einrichtung, Schritt 6](EINRICHTUNG.md#6-eigene-terminseiten-optional).

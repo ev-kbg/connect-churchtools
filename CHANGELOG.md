@@ -5,6 +5,12 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.38.0-kbg.16] - 2026-11-02
+
+### Fixed
+
+- **Termintitel im Avada-Seitentitelbereich.** Auf Termin-Detailseiten zeigt Avadas klassischer Titelbereich den Termintitel statt eines fremden WordPress-Beitragstitels. Ein fremder Untertitel wird entfernt; eingeschaltete Avada-Breadcrumbs zeigen Startseite und Termintitel. Die Korrektur gilt für ID-Adressen und Termine unter einer Elternseite. Ausgeblendete Titel, konfigurierte Suchboxen und normale WordPress-Seiten bleiben unverändert. Individuelle Titelbereiche aus dem Avada Layout Builder sind nicht erfasst.
+
 ## [1.38.0-kbg.15] - 2026-10-30
 
 ### Added
