@@ -5,6 +5,12 @@ Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 Versionierung folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.38.0-kbg.17] - 2026-11-25
+
+### Fixed
+
+- **Breite der Termin-Detailansicht in Avada.** Eine explizite Containerbreite verhindert, dass die Ansicht durch Inline-Size-Containment in einem Flex-Container auf Mobilgeräten zusammenschrumpft. Die verfügbare Inhaltsbreite wird genutzt; reguläre Seitenabstände und die maximale Breite auf Desktop bleiben erhalten.
+
 ## [1.38.0-kbg.16] - 2026-11-02
 
 ### Fixed

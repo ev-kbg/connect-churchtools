@@ -4,7 +4,7 @@ Tags: churchtools, calendar, events, sync
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.38.0-kbg.16
+Stable tag: 1.38.0-kbg.17
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -563,6 +563,10 @@ Behebt mehrere Fehler rund um Antworten der ChurchTools-API, die als „nichts v
 Release-Kandidat vor 1.0.0. Enthält einen Fix, der den Button „Kalender von ChurchTools laden“ wieder funktionsfähig macht, und stellt den WP-Cron-Termin erstmals tatsächlich auf das im Tab „Synchronisation“ gewählte Intervall um. Nach dem Update einmal die Plugin-Seite im Backend aufrufen, damit der Zeitplan korrigiert wird.
 
 == Changelog ==
+
+= 1.38.0-kbg.17 =
+
+* Behoben: Die Termin-Detailansicht nutzt auch in Avadas Flex-Containern auf Mobilgeräten die verfügbare Breite, statt auf eine schmale Textspalte zusammenzuschrumpfen. Seitenabstände und die maximale Breite auf Desktop bleiben erhalten.
 
 = 1.38.0-kbg.16 =
 

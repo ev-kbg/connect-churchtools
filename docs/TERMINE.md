@@ -176,6 +176,11 @@ Keiner der Knöpfe lädt ein Skript von Drittanbietern oder ein Zählpixel.
 
 ## Avada: Titelbereich und Breadcrumb
 
+Die Terminansicht nutzt auch in Avadas Flex-Containern die verfügbare Breite,
+einschließlich auf mobilen Geräten. Die regulären Seitenabstände bleiben
+erhalten; auf großen Bildschirmen gilt weiterhin die Breitenbegrenzung der
+Terminansicht.
+
 Auf Termin-Detailseiten übernimmt Avadas klassischer Seitentitelbereich den
 Termintitel statt eines WordPress-Beitragstitels. Ein fremder Untertitel wird
 entfernt. Wenn dort Avada-Breadcrumbs eingeschaltet sind, zeigen sie
